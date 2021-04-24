@@ -1,6 +1,7 @@
 import sys
 from read_input import ReadInput
 from graph import *
+from coloring import Coloring
 
 def main():
 
@@ -12,10 +13,18 @@ def main():
 		exit(1);
 
 	pathToInputFile = sys.argv[1]
-	population = sys.argv[2]
+	population = int(sys.argv[2])
 	 
 	problemInfo = ReadInput(pathToInputFile)
 	graph = Graph(problemInfo)
-	graph.print()
+	graph.print(False)
+
+	solutions = []
+	for i in range(population):
+		solutions.append(Coloring(graph))
+
+	for i in range(population):
+		solutions[i].print(False)
+
 if __name__ == "__main__":
     main()

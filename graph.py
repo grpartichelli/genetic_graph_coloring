@@ -27,7 +27,7 @@ class Graph():
 			
 	
 
-	def print(self):
+	def print(self,printVertices):
 	
 	
 		print("---------------------------------------------------------")
@@ -36,15 +36,16 @@ class Graph():
 		print("k: " + str(self.k))
 		
 		i=0
-		for v in self.vertices:
-			
-			print("Vertice: " +  str(i) + " | Weight: " +str(v.weight))
-			print("Connected to: {", end ="")
-			
-			for v2 in v.neighbors:
-				print(str(v2) + ",", end="")
-			
-			print("}")
-			i+=1;
+		if(printVertices):
+			for v in self.vertices:
+				
+				print("Vertice: " +  str(i) + " | Weight: " +str(v.weight))
+				print("Connected to: {", end ="")
+				
+				for v2 in v.neighbors:
+					print(str(v2) + ",", end="")
+				
+				print("}")
+				i+=1;
 		
 
