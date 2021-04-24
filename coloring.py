@@ -62,30 +62,32 @@ class Coloring:
 
 	def fixColors(self):
 			i=0
+			x = -1
 			while i < self.numColors:
 				if(self.numVerticesOfColor[i] == 0):
-					print(i)
+					x = i
 					self.numVerticesOfColor.pop(i)
 					self.weightOfColor.pop(i)
 					self.numColors -= 1
 				i+=1
 
 			for i in range(self.graph.numVertices):
-				if  self.colorOfVertice[i] == 14:
-					print("LOL")
+				if  self.colorOfVertice[i] == x:
+					print("BUGOU ")
+
+
 			colormap = {}
 			color = 0
 			for i in range(self.graph.numVertices):
 			
 				if self.colorOfVertice[i] not in colormap:
-					#print(self.colorOfVertice[i])
 					colormap[self.colorOfVertice[i]] = color
 					color+= 1
 
 			
 				self.colorOfVertice[i] = colormap[self.colorOfVertice[i]]
 			
-			#print(self.numColors)
+			
 
 	def uncolorVertice(self,verticeId, color):
 		#self.colorOfVertice[verticeId] = -1
@@ -99,7 +101,7 @@ class Coloring:
 	def colorVertice(self,verticeId, color):
 		#first let's uncolor it
 		old_color = self.colorOfVertice[verticeId]
-		#print(old_color)
+
 		if(old_color != -1):
 			self.uncolorVertice(verticeId,old_color)
 
