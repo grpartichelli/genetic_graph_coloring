@@ -49,7 +49,7 @@ class Graph():
 			if vertice_levels[i] == divider: #will go to smallest available color
 				vertice_levels[i] = 0
 		
-
+		return vertice_levels
 
 
 	def bfs(self, start):

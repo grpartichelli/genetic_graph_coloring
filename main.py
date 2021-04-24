@@ -37,6 +37,9 @@ def main():
 	for i in range(NUM_SEPARATORS):
 		separators.append(graph.get_separated_graph(random.randint(0,graph.numVertices-1)))
 
+
+
+
 	#get colorings
 	coloring = []
 	for i in range(population):
@@ -46,7 +49,7 @@ def main():
 		coloring[i].colorGreedy(startingPoint)
 
 
-	geneticSolve(coloring,separators)
+	geneticSolve(graph,coloring,separators)
 
 if __name__ == "__main__":
     main()

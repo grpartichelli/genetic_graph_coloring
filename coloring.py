@@ -8,6 +8,7 @@ class Coloring:
 		self.graph = g;
 
 		self.colorOfVertice = [] #color of the vertice i
+		
 
 		self.numVerticesOfColor = [] #number of vertices with this color
 		self.weightOfColor = [] #how many weight the sum of all vertices of this color has
@@ -17,7 +18,6 @@ class Coloring:
 
 
 	
-
 
 
 	def findSmallestColorNotUsedByNeighbors(self, verticeId):
@@ -52,20 +52,63 @@ class Coloring:
 	def createNewColor(self):
 	
 		newColor = self.numColors;
+		
+		
 		self.numColors+=1;
-
 		self.numVerticesOfColor.append(0);
 		self.weightOfColor.append(0);
 
 		return newColor
 
+	def fixColors(self):
+			i=0
+			while i < self.numColors:
+				if(self.numVerticesOfColor[i] == 0):
+					print(i)
+					self.numVerticesOfColor.pop(i)
+					self.weightOfColor.pop(i)
+					self.numColors -= 1
+				i+=1
 
+			for i in range(self.graph.numVertices):
+				if  self.colorOfVertice[i] == 14:
+					print("LOL")
+			colormap = {}
+			color = 0
+			for i in range(self.graph.numVertices):
+			
+				if self.colorOfVertice[i] not in colormap:
+					#print(self.colorOfVertice[i])
+					colormap[self.colorOfVertice[i]] = color
+					color+= 1
+
+			
+				self.colorOfVertice[i] = colormap[self.colorOfVertice[i]]
+			
+			#print(self.numColors)
+
+	def uncolorVertice(self,verticeId, color):
+		#self.colorOfVertice[verticeId] = -1
+		self.weightOfColor[color] -= self.graph.vertices[verticeId].weight
+		if(self.weightOfColor[color] <= 0.000001):
+			self.weightOfColor[color] = 0
+
+		self.numVerticesOfColor[color] -= 1
+		
 
 	def colorVertice(self,verticeId, color):
+		#first let's uncolor it
+		old_color = self.colorOfVertice[verticeId]
+		#print(old_color)
+		if(old_color != -1):
+			self.uncolorVertice(verticeId,old_color)
+
+		while(self.numColors <= color):
+			self.createNewColor()
+		
+		#now let's color it
 		self.colorOfVertice[verticeId] = color
-
 		self.weightOfColor[color] += self.graph.vertices[verticeId].weight
-
 		self.numVerticesOfColor[color] += 1
 
 
