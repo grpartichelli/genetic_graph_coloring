@@ -1,4 +1,5 @@
 import sys
+from read_input import ReadInput
 
 def main():
 
@@ -12,9 +13,8 @@ def main():
 	pathToInputFile = sys.argv[1]
 	population = sys.argv[2]
 	 
+	problemInfo = ReadInput(pathToInputFile)
 
-
-
-
+	
 if __name__ == "__main__":
     main()
