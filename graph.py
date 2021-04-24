@@ -26,6 +26,43 @@ class Graph():
 			self.vertices[e[1]].neighbors.append(e[0])
 			
 	
+	def bfs(self, start):
+		vertice_levels = [-1]*self.numVertices
+		edges_of_level = []
+
+		flag = True
+		level = 0
+		#vizinhos começam como sendo só o inicial
+		neighbors = [start]
+		0
+		while flag:
+			num_edges = 0
+			#para cada vizinho marca ele como tendo o nivel atual
+			for n in neighbors:
+				vertice_levels[n] = level
+			
+			
+			new_neighbors = []
+			#adiciona como sendo novos vizinhos os vizinhos antigos que não foram visitados ainda
+			flag = False
+			for old_n in neighbors:
+				for new_n in self.vertices[old_n].neighbors:
+					if vertice_levels[new_n] == -1:
+						vertice_levels[new_n] = 0 #temporarly
+						new_neighbors.append(new_n)
+						num_edges+= 1
+						flag = True
+			
+			neighbors = new_neighbors
+			edges_of_level.append(num_edges)
+			level+= 1
+
+		
+		#print(vertice_levels)
+		print(self.numVertices)
+		print(edges_of_level)
+
+
 
 	def print(self,printVertices):
 	

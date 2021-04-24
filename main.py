@@ -8,11 +8,11 @@ from coloring import Coloring
 
 #constants
 NUM_ARGUMENTS = 2
-RANDOM_SEED = 1
+RANDOM_SEED = 2
 
 
 def main():
-
+	random.seed(RANDOM_SEED)
 	# total arguments
 	if(len(sys.argv)-1 != NUM_ARGUMENTS):
 		print("ERROR: Please use the command: python main.py <pathToInputFile> <population>")
@@ -30,12 +30,17 @@ def main():
 	graph = Graph(problemInfo)
 	graph.print(False)
 
+	NUM_PARTITIONS = 50
+	for i in range(NUM_PARTITIONS):
+		graph.bfs(random.randint(0,graph.numVertices-1))
+
+
 	solutions = []
 	for i in range(population):
 		solutions.append(Coloring(graph))
 
 
-	random.seed(RANDOM_SEED)
+	
 	for i in range(population):
 		startingPoint = random.randint(0,graph.numVertices-1)
 		solutions[i].colorGreedy(startingPoint)
