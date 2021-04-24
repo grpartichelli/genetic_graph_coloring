@@ -1,5 +1,5 @@
 import sys
-from read_input import ReadInput
+from input import ReadInput
 from graph import *
 from coloring import Coloring
 
