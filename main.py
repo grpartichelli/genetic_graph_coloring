@@ -5,11 +5,13 @@ import random
 from input import ReadInput
 from graph import *
 from coloring import Coloring
+from genetic import *
 
 #constants
 NUM_ARGUMENTS = 2
-RANDOM_SEED = 2
+RANDOM_SEED = 4
 
+NUM_SEPARATORS = 50
 
 def main():
 	random.seed(RANDOM_SEED)
@@ -30,23 +32,21 @@ def main():
 	graph = Graph(problemInfo)
 	graph.print(False)
 
-	NUM_PARTITIONS = 50
-	for i in range(NUM_PARTITIONS):
-		graph.bfs(random.randint(0,graph.numVertices-1))
+	separators = []
+	#get separators used in crossover
+	for i in range(NUM_SEPARATORS):
+		separators.append(graph.get_separated_graph(random.randint(0,graph.numVertices-1)))
 
-
-	solutions = []
+	#get colorings
+	coloring = []
 	for i in range(population):
-		solutions.append(Coloring(graph))
+		coloring.append(Coloring(graph))
 
-
-	
-	for i in range(population):
 		startingPoint = random.randint(0,graph.numVertices-1)
-		solutions[i].colorGreedy(startingPoint)
-		solutions[i].print(False)
-		if(solutions[i].isColoringValid()):
-			print("Valid coloring")
+		coloring[i].colorGreedy(startingPoint)
+
+
+	geneticSolve(coloring,separators)
 
 if __name__ == "__main__":
     main()

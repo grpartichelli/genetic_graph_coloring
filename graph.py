@@ -25,17 +25,44 @@ class Graph():
 			self.vertices[e[0]].neighbors.append(e[1])
 			self.vertices[e[1]].neighbors.append(e[0])
 			
-	
+	def get_separated_graph(self,start):
+		vertice_levels, num_vertice_per_level = self.bfs(start)
+
+		#let's select the level that will be our separator
+		#by getting roughly half the vertices to each side
+		vsum = 0
+		level = 0
+		while vsum <= self.numVertices/2 :
+			vsum += num_vertice_per_level[level]
+			level+=1;
+
+		#defining the graph divider
+		divider = level - 1
+		
+		for i in range(self.numVertices): 
+			if vertice_levels[i] < divider: #will go to parent 1
+				vertice_levels[i] = 1
+
+			if vertice_levels[i] > divider: #will go to parent 2
+				vertice_levels[i] = 2
+
+			if vertice_levels[i] == divider: #will go to smallest available color
+				vertice_levels[i] = 0
+		
+
+
+
 	def bfs(self, start):
 		vertice_levels = [-1]*self.numVertices
-		edges_of_level = []
+		num_vertice_per_level = []
 
 		flag = True
 		level = 0
 		#vizinhos começam como sendo só o inicial
 		neighbors = [start]
-		0
+		
 		while flag:
+			num_vertice_per_level.append(len(neighbors))
 			num_edges = 0
 			#para cada vizinho marca ele como tendo o nivel atual
 			for n in neighbors:
@@ -48,20 +75,18 @@ class Graph():
 			for old_n in neighbors:
 				for new_n in self.vertices[old_n].neighbors:
 					if vertice_levels[new_n] == -1:
+						
 						vertice_levels[new_n] = 0 #temporarly
 						new_neighbors.append(new_n)
-						num_edges+= 1
 						flag = True
 			
 			neighbors = new_neighbors
-			edges_of_level.append(num_edges)
 			level+= 1
 
 		
-		#print(vertice_levels)
-		print(self.numVertices)
-		print(edges_of_level)
-
+		return vertice_levels, num_vertice_per_level
+		
+		
 
 
 	def print(self,printVertices):
