@@ -14,12 +14,92 @@ class Coloring:
 
 		for i in range(g.numVertices): #colors are only numbers >= 0
 			self.colorOfVertice.append(-1)
+
+
 	
 
 
 
+	def findSmallestColorNotUsedByNeighbors(self, verticeId):
+	
+		neighborColor = 0;
+
+		#array of colors starting at 0
+		colors = [0] * self.numColors
+
+		#Set colors to 1 if a neighbor is using it
+		for neighbor in self.graph.vertices[verticeId].neighbors:
+			neighborColor = self.colorOfVertice[neighbor]
+
+			if(neighborColor != -1):
+				colors[neighborColor] = 1
+
+		
+
+		#Search for a non set color
+		for i in range(self.numColors):
+			if colors[i] == 0:
+				return i
+			
+		
+
+		#If it gets here all colors are used
+		return self.createNewColor()
+		
+
+
+
+	def createNewColor(self):
+	
+		newColor = self.numColors;
+		self.numColors+=1;
+
+		self.numVerticesOfColor.append(0);
+		self.weightOfColor.append(0);
+
+		return newColor
+
+
+
+	def colorVertice(self,verticeId, color):
+		self.colorOfVertice[verticeId] = color
+
+		self.weightOfColor[color] += self.graph.vertices[verticeId].weight
+
+		self.numVerticesOfColor[color] += 1
+
+
+	#greedly color the graph
+	def colorGreedy(self,start):
+		
+		count = 0	
+		i = start
+		while count < self.graph.numVertices:
+		
+			vColor = self.findSmallestColorNotUsedByNeighbors(i)
+			self.colorVertice(i, vColor)
+			
+			
+			i+=1
+			#iterate as circular
+			if i == self.graph.numVertices:
+				i = 0
+			
+			
+			count+=1;
+
+	#THIS SHOULD NOT BE USED ON THE ALGORITHM, ONLY FOR TESTING
+	def isColoringValid(self):
+		for e in self.graph.edges:
+			if self.colorOfVertice[e[0]] == self.colorOfVertice[e[1]]:
+				return False
+		return True
+
+
+	#Check is a valid solution for our proble
 	def isValid(self):
 		return self.numColors <= self.graph.k;
+
 
 	def print(self,printTheColors):
 
@@ -30,12 +110,13 @@ class Coloring:
 			print("Coloring: {", end="")
 			for color in enumerate(self.colorOfVertice):	
 				print(str(color), end =",")
-			print("}")
+			print("}\n")
+
 
 
 			print("Num Vertices and Weight Painted with Color: {", end="")
 			for i in range(self.numColors):	
-				print(str(self.numVerticesOfColor[i]) + " " + str(self.weightOfColor[i]) , end =",")
+				print("Color: " + str(i) + " Vertices: " + str(self.numVerticesOfColor[i]) + " Weight" + str(self.weightOfColor[i]) , end =",")
 			print("}")
 
 				

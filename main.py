@@ -1,11 +1,17 @@
 import sys
+import random
+
+#my imports
 from input import ReadInput
 from graph import *
 from coloring import Coloring
 
-def main():
+#constants
+NUM_ARGUMENTS = 2
+RANDOM_SEED = 1
 
-	NUM_ARGUMENTS = 2
+
+def main():
 
 	# total arguments
 	if(len(sys.argv)-1 != NUM_ARGUMENTS):
@@ -13,8 +19,13 @@ def main():
 		exit(1);
 
 	pathToInputFile = sys.argv[1]
-	population = int(sys.argv[2])
-	 
+
+	try:
+		population = int(sys.argv[2])
+	except:
+		print("Please enter a valid population number")
+		exit(1)
+
 	problemInfo = ReadInput(pathToInputFile)
 	graph = Graph(problemInfo)
 	graph.print(False)
@@ -23,8 +34,14 @@ def main():
 	for i in range(population):
 		solutions.append(Coloring(graph))
 
+
+	random.seed(RANDOM_SEED)
 	for i in range(population):
+		startingPoint = random.randint(0,graph.numVertices-1)
+		solutions[i].colorGreedy(startingPoint)
 		solutions[i].print(False)
+		if(solutions[i].isColoringValid()):
+			print("Valid coloring")
 
 if __name__ == "__main__":
     main()

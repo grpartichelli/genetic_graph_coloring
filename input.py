@@ -7,7 +7,12 @@ class ReadInput():
 	edges = []
 
 	def __init__(self, pathToInput):
-		f = open(pathToInput, "r")
+
+		try:
+			f = open(pathToInput, "r")
+		except IOError:
+			print("Could not open this file: " + pathToInput)
+			exit(1)
 
 		cout = 0 
 		for line in f:
