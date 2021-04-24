@@ -26,13 +26,19 @@ class Graph():
 			self.vertices[e[1]].neighbors.append(e[0])
 			
 	def get_separated_graph(self,start):
+		num_vertice_per_level = []
+	
 		vertice_levels, num_vertice_per_level = self.bfs(start)
 
+		numVerticesLevels = 0 
+		for v in num_vertice_per_level:
+			numVerticesLevels +=  v
+			
 		#let's select the level that will be our separator
 		#by getting roughly half the vertices to each side
 		vsum = 0
 		level = 0
-		while vsum <= self.numVertices/2 :
+		while vsum <= numVerticesLevels/2 :
 			vsum += num_vertice_per_level[level]
 			level+=1;
 
@@ -62,6 +68,7 @@ class Graph():
 		neighbors = [start]
 		
 		while flag:
+			
 			num_vertice_per_level.append(len(neighbors))
 			num_edges = 0
 			#para cada vizinho marca ele como tendo o nivel atual

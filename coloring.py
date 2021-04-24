@@ -47,7 +47,58 @@ class Coloring:
 		return self.createNewColor()
 		
 
+	def swapColors(self,v,oldColor,newColor):
+		self.uncolorVertice(v,oldColor)
+		self.colorVertice(v,newColor)
 
+
+	def fixColors(self):
+		#Remap the colors in such way as to remove useless colors	
+		colormap = {}
+		color = 0
+		for i in range(self.graph.numVertices):
+				
+			if self.colorOfVertice[i] not in colormap:
+				colormap[self.colorOfVertice[i]] = color
+				color+= 1
+			self.swapColors(i,self.colorOfVertice[i],colormap[self.colorOfVertice[i]])
+		
+
+
+		i=0
+		#Remove useless colors
+		while i < self.numColors:
+			if(self.numVerticesOfColor[i] == 0):
+				self.numVerticesOfColor.pop(i)
+				self.weightOfColor.pop(i)
+				self.numColors -= 1
+				print("popped")
+			i+=1
+			
+
+	def uncolorVertice(self,verticeId, color):
+		#self.colorOfVertice[verticeId] = -1
+
+		self.weightOfColor[color] -= self.graph.vertices[verticeId].weight
+		
+		if(self.weightOfColor[color] <= 0.000001):
+			self.weightOfColor[color] = 0
+
+		self.numVerticesOfColor[color] -= 1
+		
+		
+
+	def colorVertice(self,verticeId, color):
+		
+
+		while(self.numColors <= color):
+			self.createNewColor()
+		
+		#now let's color it
+		self.colorOfVertice[verticeId] = color
+		self.weightOfColor[color] += self.graph.vertices[verticeId].weight
+		self.numVerticesOfColor[color] += 1
+		
 
 	def createNewColor(self):
 	
@@ -59,59 +110,6 @@ class Coloring:
 		self.weightOfColor.append(0);
 
 		return newColor
-
-	def fixColors(self):
-			i=0
-			x = -1
-			while i < self.numColors:
-				if(self.numVerticesOfColor[i] == 0):
-					x = i
-					self.numVerticesOfColor.pop(i)
-					self.weightOfColor.pop(i)
-					self.numColors -= 1
-				i+=1
-
-			for i in range(self.graph.numVertices):
-				if  self.colorOfVertice[i] == x:
-					print("BUGOU ")
-
-
-			colormap = {}
-			color = 0
-			for i in range(self.graph.numVertices):
-			
-				if self.colorOfVertice[i] not in colormap:
-					colormap[self.colorOfVertice[i]] = color
-					color+= 1
-
-			
-				self.colorOfVertice[i] = colormap[self.colorOfVertice[i]]
-			
-			
-
-	def uncolorVertice(self,verticeId, color):
-		#self.colorOfVertice[verticeId] = -1
-		self.weightOfColor[color] -= self.graph.vertices[verticeId].weight
-		if(self.weightOfColor[color] <= 0.000001):
-			self.weightOfColor[color] = 0
-
-		self.numVerticesOfColor[color] -= 1
-		
-
-	def colorVertice(self,verticeId, color):
-		#first let's uncolor it
-		old_color = self.colorOfVertice[verticeId]
-
-		if(old_color != -1):
-			self.uncolorVertice(verticeId,old_color)
-
-		while(self.numColors <= color):
-			self.createNewColor()
-		
-		#now let's color it
-		self.colorOfVertice[verticeId] = color
-		self.weightOfColor[color] += self.graph.vertices[verticeId].weight
-		self.numVerticesOfColor[color] += 1
 
 
 	#greedly color the graph

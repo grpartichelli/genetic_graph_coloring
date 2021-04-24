@@ -11,7 +11,7 @@ from genetic import *
 NUM_ARGUMENTS = 2
 RANDOM_SEED = 4
 
-NUM_SEPARATORS = 50
+NUM_SEPARATORS = 100
 
 def main():
 	random.seed(RANDOM_SEED)
@@ -48,7 +48,8 @@ def main():
 		startingPoint = random.randint(0,graph.numVertices-1)
 		coloring[i].colorGreedy(startingPoint)
 
-
+	
+	
 	geneticSolve(graph,coloring,separators)
 
 if __name__ == "__main__":
