@@ -4,7 +4,8 @@ class Coloring:
 	def __init__(self, g):
 		self.score = -1;
 		self.numColors = 0;
-		self.k = g.k;
+	
+		self.graph = g;
 
 		self.colorOfVertice = [] #color of the vertice i
 
@@ -18,10 +19,11 @@ class Coloring:
 
 
 	def isValid(self):
-		return self.numColors <= self.k;
+		return self.numColors <= self.graph.k;
 
 	def print(self,printTheColors):
-		print("Score: " + str(self.score) + " | Valid: " + str(self.isValid()) + " | Num Colors: " + str(self.numColors) + "| K: " + str(self.k) )
+
+		print("Score: " + str(self.score) + " | Valid: " + str(self.isValid()) + " | Num Colors: " + str(self.numColors) + "| K: " + str(self.graph.k) )
 		print("---------------------------------------------------------")
 
 		if(printTheColors):
