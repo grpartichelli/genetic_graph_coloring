@@ -1,5 +1,6 @@
 import sys
 from read_input import ReadInput
+from graph import *
 
 def main():
 
@@ -14,7 +15,7 @@ def main():
 	population = sys.argv[2]
 	 
 	problemInfo = ReadInput(pathToInputFile)
-
-	
+	graph = Graph(problemInfo)
+	graph.print()
 if __name__ == "__main__":
     main()
