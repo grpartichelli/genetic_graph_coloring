@@ -1,9 +1,11 @@
 
 
 class Coloring:
+
+
 	def __init__(self, g):
 		self.numColors = 0;
-		
+		self.score = 0
 		self.scoreNeedsUpdate = True #so we dont calculate it too much
 
 		self.graph = g;
@@ -16,29 +18,46 @@ class Coloring:
 		for i in range(g.numVertices): #colors are only numbers >= 0
 			self.colorOfVertice.append(-1)
 
-		self.calculatePunishment()
+
+	##############################################
+	#create a copy of this solution
+	def createCopy(self):
+		c = Coloring(self.graph)
+	
+		c.scoreNeedsUpdate = self.scoreNeedsUpdate
+		c.score =self.score
+
+		c.colorOfVertice = self.colorOfVertice[:]
+
+		c.numColors = self.numColors
+		c.weightOfColor =  self.weightOfColor[:]
+		c.numVerticesOfColor = self.numVerticesOfColor[:]
+
+		return c
 
 	########################################################
 	#SCORE
 	def getScore(self):
 
 		if(self.scoreNeedsUpdate):
-			self.scoreNeedsUpdate = False
-			self.score = max(self.weightOfColor)
+			if(self.isValid()):
+				self.score = max(self.weightOfColor)
+			else:
+				self.score = self.calculatePunishment()
 		
-			for _ in range(self.numColors - self.graph.k):
-				self.score += self.punish #Punishing for each k
-		
+		self.scoreNeedsUpdate = False
+
 		return self.score
 
 	#calculate punishment	
 	def calculatePunishment(self):
-		self.punish = 0
-
-		for v in self.graph.vertices:
-			self.punish += v.weight
-
-		self.punish = self.punish/self.graph.k
+		huge_number = 10000000000
+		punish = 0
+		for i in range(self.graph.k,self.numColors):
+			punish += 10000000000
+			punish += self.numVerticesOfColor[i]
+		return punish
+		
 
 	
 	########################################################
@@ -95,7 +114,7 @@ class Coloring:
 		i = start
 		while count < self.graph.numVertices:
 		
-			vColor = self.findLessWeightColorNotUsedByNeighbors(i,True)
+			vColor = self.findSmallestColorNotUsedByNeighbors(i,True)
 			self.colorVertice(i, vColor)
 			
 			
@@ -130,7 +149,6 @@ class Coloring:
 				self.numVerticesOfColor.pop(i)
 				self.weightOfColor.pop(i)
 				self.numColors -= 1
-				print("popped")
 			i+=1
 
 	##############################################################
@@ -149,7 +167,7 @@ class Coloring:
 
 	##############################################################
 	#FINDING NEIGHBORS
-	def findLessWeightColorNotUsedByNeighbors(self, verticeId,allowSameColor):
+	def findSmallestColorNotUsedByNeighbors(self, verticeId,allowSameColor):
 
 		neighborColor = 0;
 
@@ -170,53 +188,20 @@ class Coloring:
 		
 
 		#Search for a non set color
-		minColor = -1
-		minWeight = 1000000000000000
 		for i in range(self.numColors):
 			if colors[i] == 0:
-				if self.weightOfColor[i] < minWeight:
-					minColor = i
-					minWeight = self.weightOfColor[i] 
-		
-		if(minColor != -1):	
-			return minColor 
+				return i
+				
 
 		#If it gets here all colors are used
 		return self.createNewColor()	
 
-	'''
-	def findSmallestColorNotUsedByNeighbors(self, verticeId):
-	
-		neighborColor = 0;
-
-		#array of colors starting at 0
-		colors = [0] * self.numColors
-
-		#Set colors to 1 if a neighbor is using it
-		for neighbor in self.graph.vertices[verticeId].neighbors:
-			neighborColor = self.colorOfVertice[neighbor]
-
-			if(neighborColor != -1):
-				colors[neighborColor] = 1
-
-		
-
-		#Search for a non set color
-		for i in range(self.numColors):
-			if colors[i] == 0:
-				return i
-			
-		
-
-		#If it gets here all colors are used
-		return self.createNewColor()
-	'''	
 	
 	#########################################################################
 	#PRINT
 	def print(self,printTheColors):
-
-		print("Score: " + str(round(self.getScore(),3)) + " | Valid: " + str(self.isValid()) + " | Num Colors: " + str(self.numColors) + " | K: " + str(self.graph.k) )
+		s = self.getScore()
+		print("Score: " + str(round(s,2)) + " | Valid: " + str(self.isValid()) + " | Num Colors: " + str(self.numColors) + " | K: " + str(self.graph.k) )
 		print("---------------------------------------------------------")
 
 		if(printTheColors):
@@ -231,6 +216,11 @@ class Coloring:
 			for i in range(self.numColors):	
 				print("Color: " + str(i) + " Vertices: " + str(self.numVerticesOfColor[i]) + " Weight" + str(self.weightOfColor[i]) , end =",")
 			print("}")
+
+
+	def smallprint(self):
+
+		print(" Score: " + str(round(self.getScore(),3)) +" | Num Colors: " + str(self.numColors), end ="" )		
 
 
 	

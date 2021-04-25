@@ -10,30 +10,115 @@ def geneticSolve(graph,separators,populationSize, elitism, crossOverRate,mutatio
 
 	solutions = getStartingPopulation(populationSize,graph)
 	nonImprovingGens = 0
+	bestScore = positive_infnity
 
 	#START ALGORITHM
 	while shouldKeepGoing(maxTime, time.time() - startTime, maxNonImprovingGens,nonImprovingGens):
 		#Get the best solution
 		solutions = orderPopulationByScore(solutions,populationSize)
-		bestScore = solutions[0].getScore()
+
 		#Display it
 		#solutions[0].print(False)
+		'''
+		for i in range(populationSize):
+			solutions[i].smallprint()
+			print()
+		print("------------------------------------------")
+		'''
 
+		#Check if there was improvement
+		if(bestScore <= solutions[0].getScore()):
+			nonImprovingGens+= 1
+		else:
+			bestScore = solutions[0].getScore()
+			nonImprovingGens = 0
+			solutions[0].print(False)
+	
 		#Elitism preserves the <elitism> first solutions
+		newSolutions = []
+		for i in range(0,elitism):
+			newSolutions.append(solutions[i].createCopy())
+
+		#The rest of the solutions will be created by a crossover
 		for i in range(elitism,populationSize):
+			
+			#EXECUTE CROSSOVER
 			p1,p2 = selectParents(solutions,populationSize,"tournament")
+			if(random.uniform(0,1) <= crossOverRate):
+				newSolutions.append(crossover(p1,p2,graph,solutions,separators,separatorsSize))
+			else:
+				newSolutions.append(solutions[p1].createCopy()) #melhor entre os dois
 			
 
+			
+			#EXECUTE MUTATION		
+			if(random.uniform(0,1) <= mutationRate):
+				mutate(i,graph,newSolutions)
 
+		
 
+		solutions = newSolutions
 		nonImprovingGens+=1
 
-	'''
-	#Mutate the population (probably will only be applied to the kids)
-	for i in range(populationSize):
-		if(random.uniform(0,1) <= mutationRate):
-			mutate(i,graph,solutions)
-	'''
+
+
+
+########################################################################################
+#MUTATE
+#what function should we use to getNumMutations?
+def getNumMutations(graph):
+	return int(graph.numVertices*0.25)
+
+def mutate(solutionId,graph, solutions):
+	
+	#how many mutations
+	numMutations =getNumMutations(graph)
+
+	for _ in range(numMutations):
+		#change color of a random vertice:
+		i = random.randint(0, graph.numVertices-1)
+		newColor = solutions[solutionId].findSmallestColorNotUsedByNeighbors(i,True)
+		solutions[solutionId].swapColors(i,newColor)
+
+	solutions[solutionId].fixColors()
+
+		
+########################################################################################
+#CROSSOVER	
+
+#p1 = parent 1
+#p2 = parent 2
+def crossover(p1,p2,graph,solutions,separators,separatorsSize):
+
+	
+	#randomly choose what separator will be used
+	separator = separators[random.randint(0,separatorsSize-1)]
+
+	#Create copy of first parent
+	son = solutions[p1].createCopy()
+
+	
+	mustFix = []
+	for v in range(graph.numVertices):
+
+		if separator[v] == 0: #will go to another available color
+			mustFix.append(v)
+
+		#if separator[v] == 1: #will go to parent 1 Not needed since we made a copy of parent 1
+			#solutions[son].swapColors(v, solutions[p1].colorOfVertice[v])
+		
+		if separator[v] == 2: #will go to parent 2
+			son.swapColors(v, solutions[p2].colorOfVertice[v])
+	
+
+	for v in mustFix:	
+		color = son.findSmallestColorNotUsedByNeighbors(v,True)
+		son.swapColors(v, color)
+	
+	son.fixColors()
+	return son
+		
+
 #######################################################################################
 #PARENT SELECTION
 def selectParents(solutions,populationSize,type):
@@ -57,7 +142,7 @@ def randomSelection(solutions,populationSize):
 
 #TOURNEY
 def getNumCompetitors(populationSize):
-	percentage = 0.15
+	percentage = 0.25
 	if(populationSize > 2/percentage):
 		num = int(populationSize*percentage)
 	else: 
@@ -90,7 +175,7 @@ def shouldKeepGoing(maxTime,time,maxNonImprovingGens,nonImprovingGens):
 		return False
 
 	if(maxNonImprovingGens <= nonImprovingGens):
-		print("Maximum number of non improving generations reached: " + str(nonImprovingGens))
+		print("Maximum number of non improving generations reached: " + str(nonImprovingGens-1))
 		return False
 
 	return True
@@ -115,51 +200,3 @@ def orderPopulationByScore(solutions,populationSize):
 	return solutions
 
 
-########################################################################################
-#MUTATE
-#what function should we use to getNumMutations?
-def getNumMutations(graph):
-	return int(graph.numVertices*0.25)
-
-def mutate(solutionId,graph, solutions):
-	
-	#how many mutations
-	numMutations =getNumMutations(graph)
-
-	for _ in range(numMutations):
-		#change color of a random vertice:
-		i = random.randint(0, graph.numVertices-1)
-		newColor = solutions[solutionId].findLessWeightColorNotUsedByNeighbors(i, False)
-		solutions[solutionId].swapColors(i,newColor)
-		
-########################################################################################
-#CROSSOVER	
-
-#p1 = parent 1
-#p2 = parent 2
-#son = where it will be stored, deletes old solution
-def crossover(p1,p2,son,graph,solutions,separators,separatorsSize):
-
-	
-	#randomly choose what separator will be used
-	separator = separators[random.randint(0,separatorsSize-1)]
-
-	mustFix = []
-	for v in range(graph.numVertices):
-
-		if separator[v] == 0: #will go to smallest available color
-			mustFix.append(v)
-
-		if separator[v] == 1: #will go to parent 1
-			solutions[son].swapColors(v, solutions[p1].colorOfVertice[v])
-		
-		if separator[v] == 2: #will go to parent 2
-			solutions[son].swapColors(v, solutions[p2].colorOfVertice[v])
-	
-
-	for v in mustFix:	
-		color = solutions[son].findLessWeightColorNotUsedByNeighbors(v,True)
-		solutions[son].swapColors(v, color)
-	
-		
-########################################################################################
