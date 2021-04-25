@@ -3,27 +3,44 @@
 class Coloring:
 	def __init__(self, g):
 		self.numColors = 0;
-	
+		
+		self.scoreNeedsUpdate = True #so we dont calculate it too much
+
 		self.graph = g;
 
 		self.colorOfVertice = [] #color of the vertice i
 		
-
 		self.numVerticesOfColor = [] #number of vertices with this color
 		self.weightOfColor = [] #how many weight the sum of all vertices of this color has
 
 		for i in range(g.numVertices): #colors are only numbers >= 0
 			self.colorOfVertice.append(-1)
 
+		self.calculatePunishment()
+
 	########################################################
 	#SCORE
 	def getScore(self):
-		score = max(self.weightOfColor)
-		return score
 
-
-
+		if(self.scoreNeedsUpdate):
+			self.scoreNeedsUpdate = False
+			self.score = max(self.weightOfColor)
 		
+			for _ in range(self.numColors - self.graph.k):
+				self.score += self.punish #Punishing for each k
+		
+		return self.score
+
+	#calculate punishment	
+	def calculatePunishment(self):
+		self.punish = 0
+
+		for v in self.graph.vertices:
+			self.punish += v.weight
+
+		self.punish = self.punish/self.graph.k
+
+	
 	########################################################
 	#COLORING
 
@@ -33,6 +50,8 @@ class Coloring:
 
 
 	def uncolorVertice(self,verticeId):
+		self.scoreNeedsUpdate = True
+
 		color = self.colorOfVertice[verticeId]
 
 		self.weightOfColor[color] -= self.graph.vertices[verticeId].weight
@@ -45,6 +64,7 @@ class Coloring:
 		
 
 	def colorVertice(self,verticeId, color):
+		self.scoreNeedsUpdate = True
 		
 
 		while(self.numColors <= color):
@@ -89,6 +109,8 @@ class Coloring:
 
 	#Keeping colored ordered correctly
 	def fixColors(self):
+		self.scoreNeedsUpdate = True
+
 		#Remap the colors in such way as to remove useless colors	
 		colormap = {}
 		color = 0
@@ -194,7 +216,7 @@ class Coloring:
 	#PRINT
 	def print(self,printTheColors):
 
-		print("Score: " + str(self.getScore()) + " | Valid: " + str(self.isValid()) + " | Num Colors: " + str(self.numColors) + "| K: " + str(self.graph.k) )
+		print("Score: " + str(round(self.getScore(),3)) + " | Valid: " + str(self.isValid()) + " | Num Colors: " + str(self.numColors) + " | K: " + str(self.graph.k) )
 		print("---------------------------------------------------------")
 
 		if(printTheColors):

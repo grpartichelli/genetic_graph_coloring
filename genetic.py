@@ -1,24 +1,70 @@
 import random
+from coloring import Coloring
+import time
 
-def geneticSolve(graph,solutions, separators,crossOverRate,mutationRate):
-	populationSize = len(solutions)
+def geneticSolve(graph,separators,populationSize, elitism, crossOverRate,mutationRate, maxTime , maxNonImprovingGens):
+	startTime = time.time()
 	separatorsSize = len(separators)
 
+	solutions = getStartingPopulation(populationSize,graph)
+	solutions = orderPopulationByScore(solutions,populationSize)
+	bestScore = solutions[0].getScore()
+
+	nonImprovingGens = 0
+	while shouldKeepGoing(maxTime, time.time() - startTime, maxNonImprovingGens,nonImprovingGens):
+		
+
+		nonImprovingGens+=1
+
+	'''
 	#Mutate the population (probably will only be applied to the kids)
 	for i in range(populationSize):
 		if(random.uniform(0,1) <= mutationRate):
 			mutate(i,graph,solutions)
+	'''
 
-		
+#######################################################################################
+#STOPPING CONDITIONS
+def shouldKeepGoing(maxTime,time,maxNonImprovingGens,nonImprovingGens):
+	if(maxTime <= time):
+		print("Maximum time reached: " + str(time) + " seconds")
+		return False
+
+	if(maxNonImprovingGens <= nonImprovingGens):
+		print("Maximum number of non improving generations reached: " + str(nonImprovingGens))
+		return False
+
+	return True
+
+
+########################################################################################
+#POPULATION
+
+#Initial solutions (correctly colored with any number of colors)
+def getStartingPopulation(populationSize,graph):
+	solutions = []
+	for i in range(populationSize):
+		solutions.append(Coloring(graph))
+		startingPoint = random.randint(0,graph.numVertices-1)
+		#Greedly color the graph starting at a random point
+		solutions[i].colorGreedy(startingPoint)
+	return solutions
+
+
+def orderPopulationByScore(solutions,populationSize):
+	solutions.sort(key=lambda s : s.getScore())
+	return solutions
+
+
 ########################################################################################
 #MUTATE
-#what function should we use?
+#what function should we use to getNumMutations?
 def getNumMutations(graph):
 	return int(graph.numVertices/3)
 
 def mutate(solutionId,graph, solutions):
 	
-	#mutate one third of the graph
+	#how many mutations
 	numMutations =getNumMutations(graph)
 
 	for _ in range(numMutations):

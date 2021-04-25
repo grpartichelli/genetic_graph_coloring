@@ -1,10 +1,11 @@
 import sys
 
-NUM_ARGUMENTS = 4
+NUM_ARGUMENTS = 7
 def getTerminalInput():
 	# total arguments
 	if(len(sys.argv)-1 != NUM_ARGUMENTS):
-		print("ERROR: Please use the command: python main.py <pathToInputFile> <population> <crossOverRate> <mutationRsate>")
+		print("ERROR: Wrong number of arguments, please use: ")
+		print("python main.py <pathToInputFile> <population> <elitism> <crossOverRate> <mutationRate> <maxTime> <maxNonImprovingGens>")
 		exit(1);
 
 	pathToInputFile = sys.argv[1]
@@ -16,7 +17,17 @@ def getTerminalInput():
 		exit(1)
 
 	try:
-		crossOverRate = float(sys.argv[3])
+		elitism = int(sys.argv[3])
+		if(elitism < 0 ):
+			elitism = 0
+		if(elitism > population):
+			elitism = population
+	except:
+		print("Please enter a valid elitism  number")
+		exit(1)
+
+	try:
+		crossOverRate = float(sys.argv[4])
 		if(crossOverRate < 0 ):
 			crossOverRate = 0
 		if(crossOverRate > 1):
@@ -27,7 +38,7 @@ def getTerminalInput():
 		exit(1)
 
 	try:
-		mutationRate = float(sys.argv[4])
+		mutationRate = float(sys.argv[5])
 		if(mutationRate < 0 ):
 			mutationRate = 0
 		if(mutationRate > 1):
@@ -36,7 +47,19 @@ def getTerminalInput():
 		print("Please enter a valid mutationRate number")
 		exit(1)
 
-	return pathToInputFile,population,crossOverRate,mutationRate
+	try:
+		maxTime = float(sys.argv[6])
+	except:
+		print("Please enter a valid maxTime number")
+		exit(1)
+
+	try:
+		maxNonImprovingGens = int(sys.argv[7])
+	except:
+		print("Please enter a valid maxNonImprovingGens number")
+		exit(1)
+
+	return pathToInputFile,population,elitism, crossOverRate,mutationRate,maxTime,maxNonImprovingGens
 
 
 
