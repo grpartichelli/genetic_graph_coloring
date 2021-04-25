@@ -1,32 +1,22 @@
-import sys
 import random
 
 #my imports
-from input import ReadInput
+from input import *
 from graph import *
 from coloring import Coloring
 from genetic import *
 
 #constants
-NUM_ARGUMENTS = 2
 RANDOM_SEED = 4
 
 NUM_SEPARATORS = 100
 
+
+
 def main():
 	random.seed(RANDOM_SEED)
-	# total arguments
-	if(len(sys.argv)-1 != NUM_ARGUMENTS):
-		print("ERROR: Please use the command: python main.py <pathToInputFile> <population>")
-		exit(1);
-
-	pathToInputFile = sys.argv[1]
-
-	try:
-		population = int(sys.argv[2])
-	except:
-		print("Please enter a valid population number")
-		exit(1)
+	
+	pathToInputFile,population,crossOverRate,mutationRate = getTerminalInput()
 
 	problemInfo = ReadInput(pathToInputFile)
 	graph = Graph(problemInfo)
@@ -36,8 +26,6 @@ def main():
 	#get separators used in crossover
 	for i in range(NUM_SEPARATORS):
 		separators.append(graph.get_separated_graph(random.randint(0,graph.numVertices-1)))
-
-
 
 
 	#get colorings
@@ -50,7 +38,9 @@ def main():
 
 	
 	
-	geneticSolve(graph,coloring,separators)
+	geneticSolve(graph,coloring,separators,crossOverRate,mutationRate)
 
 if __name__ == "__main__":
-    main()
+	main()
+
+

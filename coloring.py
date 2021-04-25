@@ -2,7 +2,6 @@
 
 class Coloring:
 	def __init__(self, g):
-		self.score = -1;
 		self.numColors = 0;
 	
 		self.graph = g;
@@ -16,35 +15,13 @@ class Coloring:
 		for i in range(g.numVertices): #colors are only numbers >= 0
 			self.colorOfVertice.append(-1)
 
+	#temporary, has no punishment
+	def getScore(self):
+		score = max(self.weightOfColor)
+		return score
 
-	
 
 
-	def findSmallestColorNotUsedByNeighbors(self, verticeId):
-	
-		neighborColor = 0;
-
-		#array of colors starting at 0
-		colors = [0] * self.numColors
-
-		#Set colors to 1 if a neighbor is using it
-		for neighbor in self.graph.vertices[verticeId].neighbors:
-			neighborColor = self.colorOfVertice[neighbor]
-
-			if(neighborColor != -1):
-				colors[neighborColor] = 1
-
-		
-
-		#Search for a non set color
-		for i in range(self.numColors):
-			if colors[i] == 0:
-				return i
-			
-		
-
-		#If it gets here all colors are used
-		return self.createNewColor()
 		
 
 	def swapColors(self,v,oldColor,newColor):
@@ -119,7 +96,7 @@ class Coloring:
 		i = start
 		while count < self.graph.numVertices:
 		
-			vColor = self.findSmallestColorNotUsedByNeighbors(i)
+			vColor = self.findLessWeightColorNotUsedByNeighbors(i)
 			self.colorVertice(i, vColor)
 			
 			
@@ -144,9 +121,43 @@ class Coloring:
 		return self.numColors <= self.graph.k;
 
 
+	
+	
+	def findLessWeightColorNotUsedByNeighbors(self, verticeId):
+
+		neighborColor = 0;
+
+		#array of colors starting at 0
+		colors = [0] * self.numColors
+
+		#Set colors to 1 if a neighbor is using it
+		for neighbor in self.graph.vertices[verticeId].neighbors:
+			neighborColor = self.colorOfVertice[neighbor]
+
+			if(neighborColor != -1):
+				colors[neighborColor] = 1
+
+		
+
+		#Search for a non set color
+		minColor = -1
+		minWeight = 1000000000000000
+		for i in range(self.numColors):
+			if colors[i] == 0:
+				if self.weightOfColor[i] < minWeight:
+					minColor = i
+					minWeight = self.weightOfColor[i] 
+		
+		if(minColor != -1):	
+			return minColor 
+
+		#If it gets here all colors are used
+		return self.createNewColor()		
+	
+
 	def print(self,printTheColors):
 
-		print("Score: " + str(self.score) + " | Valid: " + str(self.isValid()) + " | Num Colors: " + str(self.numColors) + "| K: " + str(self.graph.k) )
+		print("Score: " + str(self.getScore()) + " | Valid: " + str(self.isValid()) + " | Num Colors: " + str(self.numColors) + "| K: " + str(self.graph.k) )
 		print("---------------------------------------------------------")
 
 		if(printTheColors):
@@ -162,5 +173,31 @@ class Coloring:
 				print("Color: " + str(i) + " Vertices: " + str(self.numVerticesOfColor[i]) + " Weight" + str(self.weightOfColor[i]) , end =",")
 			print("}")
 
-				
-				
+
+	'''
+	def findSmallestColorNotUsedByNeighbors(self, verticeId):
+	
+		neighborColor = 0;
+
+		#array of colors starting at 0
+		colors = [0] * self.numColors
+
+		#Set colors to 1 if a neighbor is using it
+		for neighbor in self.graph.vertices[verticeId].neighbors:
+			neighborColor = self.colorOfVertice[neighbor]
+
+			if(neighborColor != -1):
+				colors[neighborColor] = 1
+
+		
+
+		#Search for a non set color
+		for i in range(self.numColors):
+			if colors[i] == 0:
+				return i
+			
+		
+
+		#If it gets here all colors are used
+		return self.createNewColor()
+	'''

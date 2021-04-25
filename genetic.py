@@ -1,17 +1,18 @@
 import random
 
-def geneticSolve(graph,solutions, separators):
+def geneticSolve(graph,solutions, separators,crossOverRate,mutationRate):
 	populationSize = len(solutions)
 	separatorsSize = len(separators)
 
-	
+	#mutationRate = 0.1
+	for i in range(populationSize):
+		mutate(i,mutationRate,graph,solutions)
 
-	i=0
-	while(i <100):
-		crossover(0,1,2,graph,solutions,separators,separatorsSize)
-		crossover(2,0,1,graph,solutions,separators,separatorsSize)
-		crossover(1,2,0,graph,solutions,separators,separatorsSize)
-		i+=1
+
+
+def mutate(id,mutationRate,graph,solutions):
+	pass
+
 
 #p1 = parent 1
 #p2 = parent 2
@@ -36,6 +37,6 @@ def crossover(p1,p2,son,graph,solutions,separators,separatorsSize):
 	
 
 	for v in mustFix:	
-		color = solutions[son].findSmallestColorNotUsedByNeighbors(v)
+		color = solutions[son].findLessWeightColorNotUsedByNeighbors(v)
 		solutions[son].swapColors(v,solutions[son].colorOfVertice[v], color)
 	
