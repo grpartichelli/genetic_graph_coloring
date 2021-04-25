@@ -15,7 +15,8 @@ class Coloring:
 		for i in range(g.numVertices): #colors are only numbers >= 0
 			self.colorOfVertice.append(-1)
 
-	#temporary, has no punishment
+	########################################################
+	#SCORE
 	def getScore(self):
 		score = max(self.weightOfColor)
 		return score
@@ -23,38 +24,16 @@ class Coloring:
 
 
 		
+	########################################################
+	#COLORING
 
-	def swapColors(self,v,oldColor,newColor):
-		self.uncolorVertice(v,oldColor)
+	def swapColors(self,v,newColor):
+		self.uncolorVertice(v)
 		self.colorVertice(v,newColor)
 
 
-	def fixColors(self):
-		#Remap the colors in such way as to remove useless colors	
-		colormap = {}
-		color = 0
-		for i in range(self.graph.numVertices):
-				
-			if self.colorOfVertice[i] not in colormap:
-				colormap[self.colorOfVertice[i]] = color
-				color+= 1
-			self.swapColors(i,self.colorOfVertice[i],colormap[self.colorOfVertice[i]])
-		
-
-
-		i=0
-		#Remove useless colors
-		while i < self.numColors:
-			if(self.numVerticesOfColor[i] == 0):
-				self.numVerticesOfColor.pop(i)
-				self.weightOfColor.pop(i)
-				self.numColors -= 1
-				print("popped")
-			i+=1
-			
-
-	def uncolorVertice(self,verticeId, color):
-		#self.colorOfVertice[verticeId] = -1
+	def uncolorVertice(self,verticeId):
+		color = self.colorOfVertice[verticeId]
 
 		self.weightOfColor[color] -= self.graph.vertices[verticeId].weight
 		
@@ -96,7 +75,7 @@ class Coloring:
 		i = start
 		while count < self.graph.numVertices:
 		
-			vColor = self.findLessWeightColorNotUsedByNeighbors(i)
+			vColor = self.findLessWeightColorNotUsedByNeighbors(i,True)
 			self.colorVertice(i, vColor)
 			
 			
@@ -108,6 +87,32 @@ class Coloring:
 			
 			count+=1;
 
+	#Keeping colored ordered correctly
+	def fixColors(self):
+		#Remap the colors in such way as to remove useless colors	
+		colormap = {}
+		color = 0
+		for i in range(self.graph.numVertices):
+				
+			if self.colorOfVertice[i] not in colormap:
+				colormap[self.colorOfVertice[i]] = color
+				color+= 1
+			self.swapColors(i,colormap[self.colorOfVertice[i]])
+		
+
+
+		i=0
+		#Remove useless colors
+		while i < self.numColors:
+			if(self.numVerticesOfColor[i] == 0):
+				self.numVerticesOfColor.pop(i)
+				self.weightOfColor.pop(i)
+				self.numColors -= 1
+				print("popped")
+			i+=1
+
+	##############################################################
+	#VALIDATION
 	#THIS SHOULD NOT BE USED ON THE ALGORITHM, ONLY FOR TESTING
 	def isColoringValid(self):
 		for e in self.graph.edges:
@@ -116,19 +121,22 @@ class Coloring:
 		return True
 
 
-	#Check is a valid solution for our proble
+	#Check is a valid solution for our problem
 	def isValid(self):
 		return self.numColors <= self.graph.k;
 
-
-	
-	
-	def findLessWeightColorNotUsedByNeighbors(self, verticeId):
+	##############################################################
+	#FINDING NEIGHBORS
+	def findLessWeightColorNotUsedByNeighbors(self, verticeId,allowSameColor):
 
 		neighborColor = 0;
 
 		#array of colors starting at 0
 		colors = [0] * self.numColors
+
+		#not allowing to pick same color (for mutations)
+		if not allowSameColor:
+			colors[self.colorOfVertice[verticeId]] = 1
 
 		#Set colors to 1 if a neighbor is using it
 		for neighbor in self.graph.vertices[verticeId].neighbors:
@@ -152,27 +160,7 @@ class Coloring:
 			return minColor 
 
 		#If it gets here all colors are used
-		return self.createNewColor()		
-	
-
-	def print(self,printTheColors):
-
-		print("Score: " + str(self.getScore()) + " | Valid: " + str(self.isValid()) + " | Num Colors: " + str(self.numColors) + "| K: " + str(self.graph.k) )
-		print("---------------------------------------------------------")
-
-		if(printTheColors):
-			print("Coloring: {", end="")
-			for color in enumerate(self.colorOfVertice):	
-				print(str(color), end =",")
-			print("}\n")
-
-
-
-			print("Num Vertices and Weight Painted with Color: {", end="")
-			for i in range(self.numColors):	
-				print("Color: " + str(i) + " Vertices: " + str(self.numVerticesOfColor[i]) + " Weight" + str(self.weightOfColor[i]) , end =",")
-			print("}")
-
+		return self.createNewColor()	
 
 	'''
 	def findSmallestColorNotUsedByNeighbors(self, verticeId):
@@ -200,4 +188,27 @@ class Coloring:
 
 		#If it gets here all colors are used
 		return self.createNewColor()
-	'''
+	'''	
+	
+	#########################################################################
+	#PRINT
+	def print(self,printTheColors):
+
+		print("Score: " + str(self.getScore()) + " | Valid: " + str(self.isValid()) + " | Num Colors: " + str(self.numColors) + "| K: " + str(self.graph.k) )
+		print("---------------------------------------------------------")
+
+		if(printTheColors):
+			print("Coloring: {", end="")
+			for color in enumerate(self.colorOfVertice):	
+				print(str(color), end =",")
+			print("}\n")
+
+
+
+			print("Num Vertices and Weight Painted with Color: {", end="")
+			for i in range(self.numColors):	
+				print("Color: " + str(i) + " Vertices: " + str(self.numVerticesOfColor[i]) + " Weight" + str(self.weightOfColor[i]) , end =",")
+			print("}")
+
+
+	

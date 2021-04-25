@@ -4,15 +4,31 @@ def geneticSolve(graph,solutions, separators,crossOverRate,mutationRate):
 	populationSize = len(solutions)
 	separatorsSize = len(separators)
 
-	#mutationRate = 0.1
+	#Mutate the population (probably will only be applied to the kids)
 	for i in range(populationSize):
-		mutate(i,mutationRate,graph,solutions)
+		if(random.uniform(0,1) <= mutationRate):
+			mutate(i,graph,solutions)
 
+		
+########################################################################################
+#MUTATE
+#what function should we use?
+def getNumMutations(graph):
+	return int(graph.numVertices/3)
 
+def mutate(solutionId,graph, solutions):
+	
+	#mutate one third of the graph
+	numMutations =getNumMutations(graph)
 
-def mutate(id,mutationRate,graph,solutions):
-	pass
-
+	for _ in range(numMutations):
+		#change color of a random vertice:
+		i = random.randint(0, graph.numVertices-1)
+		newColor = solutions[solutionId].findLessWeightColorNotUsedByNeighbors(i, False)
+		solutions[solutionId].swapColors(i,newColor)
+		
+########################################################################################
+#CROSSOVER	
 
 #p1 = parent 1
 #p2 = parent 2
@@ -30,13 +46,15 @@ def crossover(p1,p2,son,graph,solutions,separators,separatorsSize):
 			mustFix.append(v)
 
 		if separator[v] == 1: #will go to parent 1
-			solutions[son].swapColors(v,solutions[son].colorOfVertice[v], solutions[p1].colorOfVertice[v])
+			solutions[son].swapColors(v, solutions[p1].colorOfVertice[v])
 		
 		if separator[v] == 2: #will go to parent 2
-			solutions[son].swapColors(v,solutions[son].colorOfVertice[v], solutions[p2].colorOfVertice[v])
+			solutions[son].swapColors(v, solutions[p2].colorOfVertice[v])
 	
 
 	for v in mustFix:	
-		color = solutions[son].findLessWeightColorNotUsedByNeighbors(v)
-		solutions[son].swapColors(v,solutions[son].colorOfVertice[v], color)
+		color = solutions[son].findLessWeightColorNotUsedByNeighbors(v,True)
+		solutions[son].swapColors(v, color)
 	
+		
+########################################################################################
