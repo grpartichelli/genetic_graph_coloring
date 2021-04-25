@@ -23,8 +23,10 @@ def geneticSolve(graph,separators,populationSize, elitism, crossOverRate,mutatio
 		for i in range(populationSize):
 			solutions[i].smallprint()
 			print()
-		print("------------------------------------------")
+		print("---------------------------------------------------------------------------")
 		'''
+		
+		
 
 		#Check if there was improvement
 		if(bestScore <= solutions[0].getScore()):
@@ -33,10 +35,12 @@ def geneticSolve(graph,separators,populationSize, elitism, crossOverRate,mutatio
 			bestScore = solutions[0].getScore()
 			nonImprovingGens = 0
 			print("Execution Time: " + str(round(time.time() - startTime,2)) + "s")
+			print(solutions[0].numVerticesOfColor)
 			solutions[0].print(False)
+			
+			
 
 		
-
 
 		#Elitism preserves the <elitism> first solutions
 		newSolutions = []
@@ -44,22 +48,25 @@ def geneticSolve(graph,separators,populationSize, elitism, crossOverRate,mutatio
 			newSolutions.append(solutions[i].createCopy())
 
 
-
 		#The rest of the solutions will be created by a crossover
 		for i in range(elitism,populationSize):
 			
 			#EXECUTE CROSSOVER
 			p1,p2 = selectParents(solutions,populationSize,"tournament")	
-			if(random.uniform(0,1) <= crossOverRate):
+			if(random.uniform(0,1) < crossOverRate):
 				newSolutions.append(crossover(p1,p2,graph,solutions,separators,separatorsSize))
 			else:
 				newSolutions.append(solutions[p1].createCopy()) #melhor entre os dois
 			
 			
 			#EXECUTE MUTATION		
-			if(random.uniform(0,1) <= mutationRate):
+			if(random.uniform(0,1) < mutationRate):
 				mutate(i,graph,newSolutions)
 
+			#TRY TO FIND BETTER COLORING
+			for c in range(newSolutions[i].numColors):
+				newSolutions[i].search(c)
+				
 		
 
 		solutions = newSolutions
@@ -72,7 +79,7 @@ def geneticSolve(graph,separators,populationSize, elitism, crossOverRate,mutatio
 #MUTATE
 #what function should we use to getNumMutations?
 def getNumMutations(graph):
-	return int(graph.numVertices*0.25)
+	return int(graph.numVertices)
 
 def mutate(solutionId,graph, solutions):
 	
@@ -82,7 +89,13 @@ def mutate(solutionId,graph, solutions):
 	for _ in range(numMutations):
 		#change color of a random vertice:
 		i = random.randint(0, graph.numVertices-1)
-		newColor = solutions[solutionId].findSmallestColorNotUsedByNeighbors(i,True)
+
+		if(solutions[solutionId].isValid()):
+			newColor = solutions[solutionId].findLeastWeightColorNotUsedByNeighbors(i,False)
+		else:
+			newColor = solutions[solutionId].findSmallestColorNotUsedByNeighbors(i,False)
+		
+		
 		solutions[solutionId].swapColors(i,newColor)
 
 	solutions[solutionId].fixColors()
@@ -117,7 +130,11 @@ def crossover(p1,p2,graph,solutions,separators,separatorsSize):
 	
 
 	for v in mustFix:	
-		color = son.findSmallestColorNotUsedByNeighbors(v,True)
+		if(son.isValid()):
+			color = son.findLeastWeightColorNotUsedByNeighbors(v,False)
+		else:
+			color = son.findSmallestColorNotUsedByNeighbors(v,False)
+		
 		son.swapColors(v, color)
 	
 	son.fixColors()

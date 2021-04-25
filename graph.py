@@ -3,6 +3,7 @@ class Vertice():
 	def __init__(self,weight):
 		self.weight = weight
 		self.neighbors = []
+		
 
 class Graph():
 	
@@ -24,6 +25,7 @@ class Graph():
 			self.edges.append(e)
 			self.vertices[e[0]].neighbors.append(e[1])
 			self.vertices[e[1]].neighbors.append(e[0])
+		
 			
 	def get_separated_graph(self,start):
 		num_vertice_per_level = []
