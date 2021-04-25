@@ -2,17 +2,29 @@ import random
 from coloring import Coloring
 import time
 
+positive_infnity = float('inf')
+
 def geneticSolve(graph,separators,populationSize, elitism, crossOverRate,mutationRate, maxTime , maxNonImprovingGens):
 	startTime = time.time()
 	separatorsSize = len(separators)
 
 	solutions = getStartingPopulation(populationSize,graph)
-	solutions = orderPopulationByScore(solutions,populationSize)
-	bestScore = solutions[0].getScore()
-
 	nonImprovingGens = 0
+
+	#START ALGORITHM
 	while shouldKeepGoing(maxTime, time.time() - startTime, maxNonImprovingGens,nonImprovingGens):
-		
+		#Get the best solution
+		solutions = orderPopulationByScore(solutions,populationSize)
+		bestScore = solutions[0].getScore()
+		#Display it
+		#solutions[0].print(False)
+
+		#Elitism preserves the <elitism> first solutions
+		for i in range(elitism,populationSize):
+			p1,p2 = selectParents(solutions,populationSize,"tournament")
+			
+
+
 
 		nonImprovingGens+=1
 
@@ -22,6 +34,53 @@ def geneticSolve(graph,separators,populationSize, elitism, crossOverRate,mutatio
 		if(random.uniform(0,1) <= mutationRate):
 			mutate(i,graph,solutions)
 	'''
+#######################################################################################
+#PARENT SELECTION
+def selectParents(solutions,populationSize,type):
+	if type == "tournament":
+		return tournamentSelection(solutions,populationSize)
+	if type == "random":
+		return randomSelection(solutions,populationSize)
+	
+
+	print("Parent selection type doesn't exist")
+	exit(1)
+#RANDOM
+def randomSelection(solutions,populationSize):
+	
+	p1,p2 = 0,0
+	while(p1 == p2):
+		p1 = random.randint(0, populationSize-1) 
+		p2 = random.randint(0, populationSize-1) 
+
+	return p1,p2 
+
+#TOURNEY
+def getNumCompetitors(populationSize):
+	percentage = 0.15
+	if(populationSize > 2/percentage):
+		num = int(populationSize*percentage)
+	else: 
+		num = 2
+	return num
+
+def tournamentSelection(solutions,populationSize):
+	p1,p2 = positive_infnity,positive_infnity
+	numCompetitors = getNumCompetitors(populationSize)
+	
+	while(p1 == positive_infnity or p2 == positive_infnity):
+		
+		for _ in range(numCompetitors):
+			c = random.randint(0,populationSize-1)
+			
+			if c < p1:
+				p1 = c
+			else:
+				if c < p2 and c != p1:
+					p2 = c
+
+	
+	return p1,p2
 
 #######################################################################################
 #STOPPING CONDITIONS
@@ -60,7 +119,7 @@ def orderPopulationByScore(solutions,populationSize):
 #MUTATE
 #what function should we use to getNumMutations?
 def getNumMutations(graph):
-	return int(graph.numVertices/3)
+	return int(graph.numVertices*0.25)
 
 def mutate(solutionId,graph, solutions):
 	
