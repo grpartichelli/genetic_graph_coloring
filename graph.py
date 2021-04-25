@@ -99,7 +99,7 @@ class Graph():
 	def print(self,printVertices):
 	
 	
-		print("---------------------------------------------------------")
+		print("---------------------------------------------------------------------------")
 		print("Num Vertices: " + str(self.numVertices))
 		print("Num Edges: " + str(self.numEdges))
 		print("k: " + str(self.k))

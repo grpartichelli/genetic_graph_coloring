@@ -201,9 +201,8 @@ class Coloring:
 	#PRINT
 	def print(self,printTheColors):
 		s = self.getScore()
-		print("Score: " + str(round(s,2)) + " | Valid: " + str(self.isValid()) + " | Num Colors: " + str(self.numColors) + " | K: " + str(self.graph.k) )
-		print("---------------------------------------------------------")
-
+		print("Score: " + str(round(s,2)) + " | Valid Solution: " + str(self.isValid()) + " | Num Colors: " + str(self.numColors) + " | K: " + str(self.graph.k) )
+		print("---------------------------------------------------------------------------")
 		if(printTheColors):
 			print("Coloring: {", end="")
 			for color in enumerate(self.colorOfVertice):	

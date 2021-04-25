@@ -11,7 +11,7 @@ def geneticSolve(graph,separators,populationSize, elitism, crossOverRate,mutatio
 	solutions = getStartingPopulation(populationSize,graph)
 	nonImprovingGens = 0
 	bestScore = positive_infnity
-
+	print("---------------------------------------------------------------------------")
 	#START ALGORITHM
 	while shouldKeepGoing(maxTime, time.time() - startTime, maxNonImprovingGens,nonImprovingGens):
 		#Get the best solution
@@ -32,24 +32,29 @@ def geneticSolve(graph,separators,populationSize, elitism, crossOverRate,mutatio
 		else:
 			bestScore = solutions[0].getScore()
 			nonImprovingGens = 0
+			print("Execution Time: " + str(round(time.time() - startTime,2)) + "s")
 			solutions[0].print(False)
-	
+
+		
+
+
 		#Elitism preserves the <elitism> first solutions
 		newSolutions = []
 		for i in range(0,elitism):
 			newSolutions.append(solutions[i].createCopy())
 
+
+
 		#The rest of the solutions will be created by a crossover
 		for i in range(elitism,populationSize):
 			
 			#EXECUTE CROSSOVER
-			p1,p2 = selectParents(solutions,populationSize,"tournament")
+			p1,p2 = selectParents(solutions,populationSize,"tournament")	
 			if(random.uniform(0,1) <= crossOverRate):
 				newSolutions.append(crossover(p1,p2,graph,solutions,separators,separatorsSize))
 			else:
 				newSolutions.append(solutions[p1].createCopy()) #melhor entre os dois
 			
-
 			
 			#EXECUTE MUTATION		
 			if(random.uniform(0,1) <= mutationRate):

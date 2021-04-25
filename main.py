@@ -26,7 +26,6 @@ def main():
 	for i in range(NUM_SEPARATORS):
 		separators.append(graph.get_separated_graph(random.randint(0,graph.numVertices-1)))
 
-	
 	geneticSolve(graph,separators,population, elitism, crossOverRate,mutationRate,maxTime,maxNonImprovingGens)
 
 if __name__ == "__main__":
