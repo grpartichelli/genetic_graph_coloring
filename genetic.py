@@ -9,6 +9,7 @@ def geneticSolve(graph,separators,populationSize, elitism, crossOverRate,mutatio
 	separatorsSize = len(separators)
 
 	solutions = getStartingPopulation(populationSize,graph)
+	print(solutions[0].restrictedColors, solutions[0].colorOfVertice)
 	nonImprovingGens = 0
 	bestScore = positive_infnity
 	print("---------------------------------------------------------------------------")
@@ -25,8 +26,6 @@ def geneticSolve(graph,separators,populationSize, elitism, crossOverRate,mutatio
 			print()
 		print("---------------------------------------------------------------------------")
 		'''
-		
-		
 
 		#Check if there was improvement
 		if(bestScore <= solutions[0].getScore()):
@@ -37,10 +36,7 @@ def geneticSolve(graph,separators,populationSize, elitism, crossOverRate,mutatio
 			print("Execution Time: " + str(round(time.time() - startTime,2)) + "s")
 			print(solutions[0].numVerticesOfColor)
 			solutions[0].print(False)
-			
-			
 
-		
 
 		#Elitism preserves the <elitism> first solutions
 		newSolutions = []
@@ -50,24 +46,19 @@ def geneticSolve(graph,separators,populationSize, elitism, crossOverRate,mutatio
 
 		#The rest of the solutions will be created by a crossover
 		for i in range(elitism,populationSize):
-			
 			#EXECUTE CROSSOVER
-			p1,p2 = selectParents(solutions,populationSize,"tournament")	
+			p1,p2 = selectParents(solutions,populationSize,"tournament")
 			if(random.uniform(0,1) < crossOverRate):
 				newSolutions.append(crossover(p1,p2,graph,solutions,separators,separatorsSize))
 			else:
 				newSolutions.append(solutions[p1].createCopy()) #melhor entre os dois
-			
-			
-			#EXECUTE MUTATION		
+			#EXECUTE MUTATION
 			if(random.uniform(0,1) < mutationRate):
 				mutate(i,graph,newSolutions)
 
 			#TRY TO FIND BETTER COLORING
 			for c in range(newSolutions[i].numColors):
 				newSolutions[i].search(c)
-				
-		
 
 		solutions = newSolutions
 		nonImprovingGens+=1
@@ -82,7 +73,6 @@ def getNumMutations(graph):
 	return int(graph.numVertices)
 
 def mutate(solutionId,graph, solutions):
-	
 	#how many mutations
 	numMutations =getNumMutations(graph)
 
@@ -91,31 +81,25 @@ def mutate(solutionId,graph, solutions):
 		i = random.randint(0, graph.numVertices-1)
 
 		if(solutions[solutionId].isValid()):
-			newColor = solutions[solutionId].findLeastWeightColorNotUsedByNeighbors(i,False)
+			newColor = solutions[solutionId].findLeastWeightColorNotUsedByNeighbors(i,True)
 		else:
-			newColor = solutions[solutionId].findSmallestColorNotUsedByNeighbors(i,False)
-		
-		
+			newColor = solutions[solutionId].findSmallestColorNotUsedByNeighbors(i,True)
 		solutions[solutionId].swapColors(i,newColor)
 
-	solutions[solutionId].fixColors()
+		#solutions[solutionId].fixColors()
 
-		
 ########################################################################################
-#CROSSOVER	
+#CROSSOVER
 
 #p1 = parent 1
 #p2 = parent 2
 def crossover(p1,p2,graph,solutions,separators,separatorsSize):
-
-	
 	#randomly choose what separator will be used
 	separator = separators[random.randint(0,separatorsSize-1)]
 
 	#Create copy of first parent
 	son = solutions[p1].createCopy()
 
-	
 	mustFix = []
 	for v in range(graph.numVertices):
 
@@ -124,22 +108,17 @@ def crossover(p1,p2,graph,solutions,separators,separatorsSize):
 
 		#if separator[v] == 1: #will go to parent 1 Not needed since we made a copy of parent 1
 			#solutions[son].swapColors(v, solutions[p1].colorOfVertice[v])
-		
 		if separator[v] == 2: #will go to parent 2
 			son.swapColors(v, solutions[p2].colorOfVertice[v])
-	
 
-	for v in mustFix:	
-		if(son.isValid()):
-			color = son.findLeastWeightColorNotUsedByNeighbors(v,False)
-		else:
-			color = son.findSmallestColorNotUsedByNeighbors(v,False)
-		
-		son.swapColors(v, color)
-	
-	son.fixColors()
+		for v in mustFix:
+			if(son.isValid()):
+				color = son.findLeastWeightColorNotUsedByNeighbors(v,True)
+			else:
+				color = son.findSmallestColorNotUsedByNeighbors(v,True)
+			son.swapColors(v, color)
+		#son.fixColors()
 	return son
-		
 
 #######################################################################################
 #PARENT SELECTION
@@ -148,45 +127,40 @@ def selectParents(solutions,populationSize,type):
 		return tournamentSelection(solutions,populationSize)
 	if type == "random":
 		return randomSelection(solutions,populationSize)
-	
 
 	print("Parent selection type doesn't exist")
 	exit(1)
 #RANDOM
 def randomSelection(solutions,populationSize):
-	
 	p1,p2 = 0,0
 	while(p1 == p2):
-		p1 = random.randint(0, populationSize-1) 
-		p2 = random.randint(0, populationSize-1) 
+		p1 = random.randint(0, populationSize-1)
+		p2 = random.randint(0, populationSize-1)
 
-	return p1,p2 
+		return p1,p2
 
 #TOURNEY
 def getNumCompetitors(populationSize):
 	percentage = 0.25
 	if(populationSize > 2/percentage):
 		num = int(populationSize*percentage)
-	else: 
+	else:
 		num = 2
 	return num
 
 def tournamentSelection(solutions,populationSize):
 	p1,p2 = positive_infnity,positive_infnity
 	numCompetitors = getNumCompetitors(populationSize)
-	
+
 	while(p1 == positive_infnity or p2 == positive_infnity):
-		
 		for _ in range(numCompetitors):
 			c = random.randint(0,populationSize-1)
-			
 			if c < p1:
 				p1 = c
 			else:
 				if c < p2 and c != p1:
 					p2 = c
 
-	
 	return p1,p2
 
 #######################################################################################
@@ -214,11 +188,11 @@ def getStartingPopulation(populationSize,graph):
 		startingPoint = random.randint(0,graph.numVertices-1)
 		#Greedly color the graph starting at a random point
 		solutions[i].colorGreedy(startingPoint)
+		solutions[i].restrictedColors
 	return solutions
 
 
 def orderPopulationByScore(solutions,populationSize):
 	solutions.sort(key=lambda s : s.getScore())
 	return solutions
-
 

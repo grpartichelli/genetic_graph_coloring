@@ -6,7 +6,7 @@ from graph import *
 from genetic import *
 
 #constants
-RANDOM_SEED = 4
+RANDOM_SEED = 40
 
 NUM_SEPARATORS = 100
 

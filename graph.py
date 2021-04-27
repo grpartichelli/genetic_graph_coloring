@@ -3,7 +3,12 @@ class Vertice():
 	def __init__(self,weight):
 		self.weight = weight
 		self.neighbors = []
-		
+
+	def __lt__(self, other):
+		if len(self.neighbors) < len(other.neighbors):
+			return True
+		else:
+			return False
 
 class Graph():
 	
