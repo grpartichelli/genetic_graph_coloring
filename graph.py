@@ -52,7 +52,7 @@ class Graph():
 		#defining the graph divider
 		divider = level - 1
 		
-		for i in range(self.numVertices): 
+		for i in range(self.numVertices):
 			if vertice_levels[i] < divider: #will go to parent 1
 				vertice_levels[i] = 1
 
@@ -89,7 +89,6 @@ class Graph():
 			for old_n in neighbors:
 				for new_n in self.vertices[old_n].neighbors:
 					if vertice_levels[new_n] == -1:
-						
 						vertice_levels[new_n] = 0 #temporarly
 						new_neighbors.append(new_n)
 						flag = True
@@ -104,8 +103,6 @@ class Graph():
 
 
 	def print(self,printVertices):
-	
-	
 		print("---------------------------------------------------------------------------")
 		print("Num Vertices: " + str(self.numVertices))
 		print("Num Edges: " + str(self.numEdges))

@@ -8,7 +8,7 @@ class Coloring:
 		self.graph = g;
 
 		self.colorOfVertice = [] #color of the vertice i
-		self.restrictedColors= {} #colors that are possible
+		self.restrictedColors = {} #colors that are possible
 		self.numVerticesOfColor = [] #number of vertices with this color
 		self.weightOfColor = [] #how many weight the sum of all vertices of this color has
 
@@ -32,12 +32,12 @@ class Coloring:
 		c.numColors = self.numColors
 		c.weightOfColor =  self.weightOfColor[:]
 		c.numVerticesOfColor = self.numVerticesOfColor[:]
+		c.restrictedColors = self.restrictedColors[:]
 		return c
 
 	########################################################
 	#SCORE
 	def getScore(self):
-
 		if(self.isValid()):
 			self.score = max(self.weightOfColor)
 		else:
@@ -103,6 +103,7 @@ class Coloring:
 
 	#greedly color the graph
 	def colorGreedy(self,start):
+		print("Greedy Coloring ...")
 		for i in range(self.graph.numVertices):
 			self.restrictedColors[i] = set()
 		count = 0
@@ -115,14 +116,19 @@ class Coloring:
 			i%= self.graph.numVertices #A little bit faster
 			count+=1;
 
-		resonable_number = random.choice(self.numVerticesOfColor)/2
 		j = self.numColors + 1
 		while self.numColors < self.graph.k:
-			for _ in range(int(resonable_number)):
+			for i in range(int(max(self.numVerticesOfColor)/2)):
 				vert_id = random.randint(0, self.graph.numVertices - 1)
 				if self.numVerticesOfColor[self.colorOfVertice[vert_id]] >= 1:
 					self.swapColors(vert_id,j)
 			j += 1
+
+		for i in range(self.graph.numVertices):
+			newColor = self.findLeastWeightColorNotUsedByNeighbors(i,False)
+			self.swapColors(i, newColor)
+
+
 
 		for i in range(self.graph.numVertices):
 			self.addRestriction(i)
@@ -212,21 +218,21 @@ class Coloring:
 		colors = [0] * self.numColors
 
 		#not allowing to pick same color (for mutations)
-		if not allowSameColor:
-			colors[self.colorOfVertice[verticeId]] = 1
+		#if not allowSameColor:
+			#colors[self.colorOfVertice[verticeId]] = 1
 
 		#Set colors to 1 if a neighbor is using it
-		for neighbor in self.graph.vertices[verticeId].neighbors:
-			neighborColor = self.colorOfVertice[neighbor]
+		#for neighbor in self.graph.vertices[verticeId].neighbors:
+			#neighborColor = self.colorOfVertice[neighbor]
 
-			if(neighborColor != -1):
-				colors[neighborColor] = 1
+			#if(neighborColor != -1):
+			#	colors[neighborColor] = 1
 
 		color = -1
 		mincolor = 100000000000000000
 		#Search for a non set color
 		for i in range(self.numColors):
-			if colors[i] == 0:
+			if self.restrictedColors[i]:
 				if self.weightOfColor[i] < mincolor:
 					mincolor = self.weightOfColor[i]
 					color = i
@@ -245,6 +251,7 @@ class Coloring:
 	def print(self,printTheColors):
 		s = self.getScore()
 		print("Score: " + str(round(s,2)) + " | Valid Solution: " + str(self.isValid()) + " | Num Colors: " + str(self.numColors) + " | K: " + str(self.graph.k) )
+		print(self.numVerticesOfColor)
 		print("---------------------------------------------------------------------------")
 		if(printTheColors):
 			print("Coloring: {", end="")

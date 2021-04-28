@@ -32,7 +32,6 @@ def getTerminalInput():
 			crossOverRate = 0
 		if(crossOverRate > 1):
 			crossOverRate = 1
-
 	except:
 		print("Please enter a valid crossOverRate number")
 		exit(1)
@@ -65,7 +64,6 @@ def getTerminalInput():
 
 
 class ReadInput():
-	
 	numVertices = 0
 	numEdges = 0
 	k = 0

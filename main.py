@@ -6,7 +6,7 @@ from graph import *
 from genetic import *
 
 #constants
-RANDOM_SEED = 40
+RANDOM_SEED = random.randint(0,10000)
 
 NUM_SEPARATORS = 100
 
