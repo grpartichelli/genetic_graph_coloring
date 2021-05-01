@@ -11,6 +11,7 @@ def geneticSolve(graph,separators,populationSize, elitism, crossOverRate,mutatio
 
 	solutions = getStartingPopulation(populationSize,graph)
 	nonImprovingGens = 0
+	generations = 0
 	bestScore = positive_infnity
 	print("---------------------------------------------------------------------------")
 	#START ALGORITHM
@@ -24,6 +25,7 @@ def geneticSolve(graph,separators,populationSize, elitism, crossOverRate,mutatio
 		#Check if there was improvement
 		if(bestScore <= solutions[0].getScore()):
 			nonImprovingGens+= 1
+			print(generations)
 			print(nonImprovingGens)
 			print("Execution Time: " + str(round(time.time() - startTime,2)) + "s")
 			print(solutions[0].numVerticesOfColor)
@@ -36,33 +38,38 @@ def geneticSolve(graph,separators,populationSize, elitism, crossOverRate,mutatio
 			solutions[0].print(False)
 
 
+		elitism_num = int(elitism * populationSize)
 		#Elitism preserves the <elitism> first solutions
 		newSolutions = []
-		for i in range(0,elitism):
+		for i in range(0,elitism_num):
 			newSolutions.append(copy.copy(solutions[i])) #copy is easier
 
 
 		#The rest of the solutions will be created by a crossover
-		for i in range(elitism,populationSize):
+		for i in range(elitism_num,populationSize):
 			#EXECUTE CROSSOVER
-			p1,p2 = selectParents(solutions,populationSize,"random")
+			p1,p2 = selectParents(solutions,populationSize,"tournament")
 			if(random.uniform(0,1) < crossOverRate):
 				newSolutions.append(crossover(p1,p2,graph,solutions,separators,separatorsSize))
 			else:
 				newSolutions.append(copy.copy(solutions[p1])) #melhor entre os dois
 			#EXECUTE MUTATION
-			if random.uniform(0,1) < mutationRate:
-				new_mutate(i,solutions, graph, 0)
-			if random.uniform(0,1) < mutationRate:
-				mutate(i, graph, solutions)
 
-			#TRY TO FIND BETTER COLORING
-			#for c in range(newSolutions[i].numColors):
-			#newSolutions[i].search(c)
+			if random.uniform(0,1) < mutationRate:
+				if random.uniform(0,1) < 0.5:
+					mutateBest(i, graph, newSolutions)
+				else:
+					mutateRandom(i, graph, newSolutions)
+
+				#for c in range(newSolutions[i].numColors):
+				#newSolutions[i].search(c)
 		solutions = newSolutions
 		for solution in solutions:
 			solution.print(False)
+
 		nonImprovingGens+=1
+		generations += 1
+
 	solutions[0].print(False)
 	return solutions[0]
 
@@ -80,8 +87,20 @@ def new_mutate(solutionId, solutions,graph, mutationRate):
 			if solutions[solutionId].restrictedColors[i]:
 				solutions[solutionId].swapColors(i, new_color)
 
+def mutateRandom(solutionId, graph, solutions):
+	numMutations=getNumMutations(graph)
 
-def mutate(solutionId,graph, solutions):
+	for _ in range(numMutations):
+		i = random.randint(0, graph.numVertices - 1)
+
+		newColor = solutions[solutionId].findRandomAvailableColor(i)
+		solutions[solutionId].swapColors(i,newColor)
+
+	if not solutions[solutionId].isValid():
+		solutions[solutionId].fixColors()
+
+
+def mutateBest(solutionId,graph, solutions):
 	#how many mutations
 	numMutations=getNumMutations(graph)
 
@@ -90,12 +109,13 @@ def mutate(solutionId,graph, solutions):
 		i = random.randint(0, graph.numVertices-1)
 
 		if(solutions[solutionId].isValid()):
-			newColor = solutions[solutionId].findLeastWeightColorNotUsedByNeighbors(i,False)
+			newColor = solutions[solutionId].findLeastWeightColorNotUsedByNeighbors(i,True)
 		else:
-			newColor = solutions[solutionId].findSmallestColorNotUsedByNeighbors(i,False)
+			newColor = solutions[solutionId].findSmallestColorNotUsedByNeighbors(i,True)
 		solutions[solutionId].swapColors(i,newColor)
 
-		#solutions[solutionId].fixColors()
+	if not solutions[solutionId].isValid():
+		solutions[solutionId].fixColors()
 
 ########################################################################################
 #CROSSOVER
@@ -110,25 +130,27 @@ def crossover(p1,p2,graph,solutions,separators,separatorsSize):
 	son = copy.copy(solutions[p1])
 
 	mustFix = []
+	#if solutions[p2].colorOfVertice[v] not in son.restrictedColors[v]: #on.swapColors(v, solutions[p2].colorOfVertice[v])
 
 	for v in range(son.numColors):
-		#if separator[v] == 0: #will go to another available color
-		if solutions[p2].colorOfVertice[v] not in son.restrictedColors[v]:
-			son.swapColors(v, solutions[p2].colorOfVertice[v])
-		#	mustFix.append(v)
+		if separator[v] == 0: #will go to another available color
+			mustFix.append(v)
 
 		#if separator[v] == 1: #will go to parent 1 Not needed since we made a copy of parent 1
 		#solutions[son].swapColors(v, solutions[p1].colorOfVertice[v])
-		#if separator[v] == 2: #will go to parent 2
-			#son.swapColors(v, solutions[p2].colorOfVertice[v])
 
-	#for v in mustFix:
-		#if(son.isValid()):
-		#	color = son.findLeastWeightColorNotUsedByNeighbors(v,True)
-		#else:
-		#	color = son.findSmallestColorNotUsedByNeighbors(v,True)
-		#son.swapColors(v, color)
-#		son.fixColors()
+		if separator[v] == 2: #will go to parent 2
+			son.swapColors(v, solutions[p2].colorOfVertice[v])
+
+	for v in mustFix:
+		if(son.isValid()):
+			color = son.findLeastWeightColorNotUsedByNeighbors(v,True)
+		else:
+			color = son.findSmallestColorNotUsedByNeighbors(v,True)
+		son.swapColors(v, color)
+
+	if not son.isValid():
+		son.fixColors()
 
 	return son
 

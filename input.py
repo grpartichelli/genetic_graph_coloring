@@ -1,11 +1,11 @@
 import sys
 
-NUM_ARGUMENTS = 7
+NUM_ARGUMENTS = 8
 def getTerminalInput():
 	# total arguments
 	if(len(sys.argv)-1 != NUM_ARGUMENTS):
 		print("ERROR: Wrong number of arguments, please use: ")
-		print("python main.py <pathToInputFile> <population> <elitism> <crossOverRate> <mutationRate> <maxTime> <maxNonImprovingGens>")
+		print("python main.py <pathToInputFile> <population> <elitism> <crossOverRate> <mutationRate> <maxTime> <maxNonImprovingGens> <randomSeed>")
 		exit(1);
 
 	pathToInputFile = sys.argv[1]
@@ -17,11 +17,11 @@ def getTerminalInput():
 		exit(1)
 
 	try:
-		elitism = int(sys.argv[3])
-		if(elitism < 0 ):
+		elitism = float(sys.argv[3])
+		if(elitism < 0):
 			elitism = 0
-		if(elitism > population):
-			elitism = population
+		if(elitism > 1):
+			elitism = 1
 	except:
 		print("Please enter a valid elitism  number")
 		exit(1)
@@ -58,7 +58,13 @@ def getTerminalInput():
 		print("Please enter a valid maxNonImprovingGens number")
 		exit(1)
 
-	return pathToInputFile,population,elitism, crossOverRate,mutationRate,maxTime,maxNonImprovingGens
+	try:
+		randomSeed = int(sys.argv[8])
+	except:
+		print("Please enter a valid random seed number")
+		exit(1)
+
+	return pathToInputFile,population,elitism, crossOverRate,mutationRate,maxTime,maxNonImprovingGens, randomSeed
 class ReadInput():
 	numVertices = 0
 	numEdges = 0

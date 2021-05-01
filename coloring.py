@@ -23,7 +23,6 @@ class Coloring:
 		c.score =self.score
 
 		c.colorOfVertice = self.colorOfVertice[:]
-
 		c.numColors = self.numColors
 		c.weightOfColor =  self.weightOfColor[:]
 		c.numVerticesOfColor = self.numVerticesOfColor[:]
@@ -121,7 +120,7 @@ class Coloring:
 			self.restrictedColors[i] = set()
 		count = 0
 		i = start
-		self.graph.vertices.sort()
+		#self.graph.vertices.sort()
 		while count < self.graph.numVertices:
 			vColor = self.findSmallestColorNotUsedByNeighbors(i,False)
 			self.colorVertice(i, vColor)
@@ -176,14 +175,14 @@ class Coloring:
 
 		########################################################
 	#SEARCH
-	def search(self,color):
-		for v in range(self.graph.numVertices):
-			if self.colorOfVertice[v] == color:
-				if self.isValid():
-					self.swapColors(v,self.findLeastWeightColorNotUsedByNeighbors(v,True))
-				else:
-					self.swapColors(v,self.findSmallestColorNotUsedByNeighbors(v,True))
-		self.fixColors()
+	# def search(self,color):
+	# 	for v in range(self.graph.numVertices):
+	# 		if self.colorOfVertice[v] == color:
+	# 			if self.isValid():
+	# 				self.swapColors(v,self.findLeastWeightColorNotUsedByNeighbors(v,True))
+	# 			else:
+	# 				self.swapColors(v,self.findSmallestColorNotUsedByNeighbors(v,True))
+	# 	self.fixColors()
 
 
 	##############################################################
@@ -201,7 +200,7 @@ class Coloring:
 		else:
 			return self.createNewColor()
 
-	def findLeastWeightColorNotUsedByNeighbors(self, verticeId,allowSameColor):
+	def findLeastWeightColorNotUsedByNeighbors(self, verticeId,tryToGetNewColor):
 
 		#neighborColor = 0;
 
@@ -231,8 +230,20 @@ class Coloring:
 			return color
 
 		#If it gets here all colors are used
-		if not allowSameColor: #allowing the same color to avoid growing
+		if tryToGetNewColor: #allowing the same color to avoid growing
 			return self.colorOfVertice[verticeId]
+		else:
+			return self.createNewColor()
+
+	def findRandomAvailableColor(self,verticeId):
+		availableColors = []
+		#Search for a non set color
+		for i in range(self.numColors):
+			if i not in self.restrictedColors[verticeId]:
+				availableColors.append(i)
+
+		if availableColors:
+			return random.choice(availableColors)
 		else:
 			return self.createNewColor()
 
