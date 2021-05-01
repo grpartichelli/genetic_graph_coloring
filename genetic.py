@@ -39,7 +39,7 @@ def geneticSolve(graph,separators,populationSize, elitism, crossOverRate,mutatio
 		#Elitism preserves the <elitism> first solutions
 		newSolutions = []
 		for i in range(0,elitism):
-			newSolutions.append(copy.deepcopy(solutions[i])) #deepcopy is easier
+			newSolutions.append(copy.copy(solutions[i])) #copy is easier
 
 
 		#The rest of the solutions will be created by a crossover
@@ -49,9 +49,12 @@ def geneticSolve(graph,separators,populationSize, elitism, crossOverRate,mutatio
 			if(random.uniform(0,1) < crossOverRate):
 				newSolutions.append(crossover(p1,p2,graph,solutions,separators,separatorsSize))
 			else:
-				newSolutions.append(copy.deepcopy(solutions[p1])) #melhor entre os dois
+				newSolutions.append(copy.copy(solutions[p1])) #melhor entre os dois
 			#EXECUTE MUTATION
-			#mutate(i, graph, solutions)
+			if random.uniform(0,1) < mutationRate:
+				new_mutate(i,solutions, graph, 0)
+			if random.uniform(0,1) < mutationRate:
+				mutate(i, graph, solutions)
 
 			#TRY TO FIND BETTER COLORING
 			#for c in range(newSolutions[i].numColors):
@@ -60,9 +63,8 @@ def geneticSolve(graph,separators,populationSize, elitism, crossOverRate,mutatio
 		for solution in solutions:
 			solution.print(False)
 		nonImprovingGens+=1
-
-
-
+	solutions[0].print(False)
+	return solutions[0]
 
 ########################################################################################
 #MUTATE
@@ -73,10 +75,10 @@ def getNumMutations(graph):
 def new_mutate(solutionId, solutions,graph, mutationRate):
 	""" Mutate in the old fashion way"""
 	for i in range(graph.numVertices):
-		newColor = random.randint(0, solutions[solutionId].numColors)
-		if random.uniform(0,1) < mutationRate:
-			if newColor not in solutions[solutionId].restrictedColors[i]:
-				solutions[solutionId].swapColors(i, newColor)
+		new_color = solutions[solutionId].findLeastWeightColorNotUsedByNeighbors(i,True)
+		if random.uniform(0,1) < 0.1:
+			if solutions[solutionId].restrictedColors[i]:
+				solutions[solutionId].swapColors(i, new_color)
 
 
 def mutate(solutionId,graph, solutions):
@@ -105,27 +107,27 @@ def crossover(p1,p2,graph,solutions,separators,separatorsSize):
 	separator = separators[random.randint(0,separatorsSize-1)]
 
 	#Create copy of first parent
-	son = copy.deepcopy(solutions[p1])
+	son = copy.copy(solutions[p1])
 
-	randomPoint = random.randint(0, graph.numVertices)
-	#mustFix = []
-	for v in range(0, randomPoint):
+	mustFix = []
 
+	for v in range(son.numColors):
 		#if separator[v] == 0: #will go to another available color
-			if solutions[p2].colorOfVertice[v] not in son.restrictedColors[v]:
-				son.swapColors(v, solutions[p2].colorOfVertice[v])
-			#mustFix.append(v)
+		if solutions[p2].colorOfVertice[v] not in son.restrictedColors[v]:
+			son.swapColors(v, solutions[p2].colorOfVertice[v])
+		#	mustFix.append(v)
 
 		#if separator[v] == 1: #will go to parent 1 Not needed since we made a copy of parent 1
-			#solutions[son].swapColors(v, solutions[p1].colorOfVertice[v])
+		#solutions[son].swapColors(v, solutions[p1].colorOfVertice[v])
 		#if separator[v] == 2: #will go to parent 2
-		#son.swapColors(v, solutions[p2].colorOfVertice[v])
-#		for v in mustFix:
-#			if(son.isValid()):
-#				color = son.findLeastWeightColorNotUsedByNeighbors(v,True)
-#			else:
-#				color = son.findSmallestColorNotUsedByNeighbors(v,True)
-#			son.swapColors(v, color)
+			#son.swapColors(v, solutions[p2].colorOfVertice[v])
+
+	#for v in mustFix:
+		#if(son.isValid()):
+		#	color = son.findLeastWeightColorNotUsedByNeighbors(v,True)
+		#else:
+		#	color = son.findSmallestColorNotUsedByNeighbors(v,True)
+		#son.swapColors(v, color)
 #		son.fixColors()
 
 	return son
@@ -186,7 +188,6 @@ def shouldKeepGoing(maxTime,time,maxNonImprovingGens,nonImprovingGens):
 
 	return True
 
-
 ########################################################################################
 #POPULATION
 
@@ -198,7 +199,6 @@ def getStartingPopulation(populationSize,graph):
 		startingPoint = random.randint(0,graph.numVertices-1)
 		#Greedly color the graph starting at a random point
 		solutions[i].colorGreedy(startingPoint)
-		solutions[i].restrictedColors
 	return solutions
 
 

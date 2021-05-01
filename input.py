@@ -59,10 +59,6 @@ def getTerminalInput():
 		exit(1)
 
 	return pathToInputFile,population,elitism, crossOverRate,mutationRate,maxTime,maxNonImprovingGens
-
-
-
-
 class ReadInput():
 	numVertices = 0
 	numEdges = 0
@@ -100,6 +96,3 @@ class ReadInput():
 		
 		
 		f.close()
-
-
-

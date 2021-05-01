@@ -11,8 +11,6 @@ class Vertice():
 			return False
 
 class Graph():
-	
-
 	def __init__(self, p):
 		self.numVertices = p.numVertices;
 		self.numEdges = p.numEdges;
@@ -30,8 +28,6 @@ class Graph():
 			self.edges.append(e)
 			self.vertices[e[0]].neighbors.append(e[1])
 			self.vertices[e[1]].neighbors.append(e[0])
-		
-			
 	def get_separated_graph(self,start):
 		num_vertice_per_level = []
 	
@@ -63,8 +59,6 @@ class Graph():
 				vertice_levels[i] = 0
 		
 		return vertice_levels
-
-
 	def bfs(self, start):
 		vertice_levels = [-1]*self.numVertices
 		num_vertice_per_level = []
@@ -98,10 +92,6 @@ class Graph():
 
 		
 		return vertice_levels, num_vertice_per_level
-		
-		
-
-
 	def print(self,printVertices):
 		print("---------------------------------------------------------------------------")
 		print("Num Vertices: " + str(self.numVertices))
@@ -120,5 +110,3 @@ class Graph():
 				
 				print("}")
 				i+=1;
-		
-

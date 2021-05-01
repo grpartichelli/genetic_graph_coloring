@@ -7,13 +7,12 @@ from genetic import *
 
 #constants
 RANDOM_SEED = random.randint(0,10000)
+SEED = 1234
 
-NUM_SEPARATORS = 100
-
-
+NUM_SEPARATORS = 2
 
 def main():
-	random.seed(RANDOM_SEED)
+	random.seed(SEED)
 	
 	pathToInputFile,population,elitism,crossOverRate,mutationRate,maxTime,maxNonImprovingGens = getTerminalInput()
 

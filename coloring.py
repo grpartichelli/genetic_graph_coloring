@@ -18,6 +18,18 @@ class Coloring:
 		self.sumWeights = 0
 		for v in self.graph.vertices:
 			self.sumWeights += v.weight
+	def __copy__(self):
+		c = Coloring(self.graph)
+		c.score =self.score
+
+		c.colorOfVertice = self.colorOfVertice[:]
+
+		c.numColors = self.numColors
+		c.weightOfColor =  self.weightOfColor[:]
+		c.numVerticesOfColor = self.numVerticesOfColor[:]
+		c.restrictedColors = self.restrictedColors
+
+		return c
 
 		#self.sumWeights = pow(10,ceil(log10(self.sumWeights))) #making a power of 10 so its easier to visualize
 
@@ -49,7 +61,7 @@ class Coloring:
 	def calculatePunishment(self):
 		punish = 0
 		for i in range(self.graph.k,self.numColors):
-			punish += self.sumWeights #diffenciate between k levels and always be bigger then any weight
+			punish += self.sumWeights #differenciate between k levels and always be bigger then any weight
 			punish += self.numVerticesOfColor[i] #differenciate between num of vertices
 		return punish
 
@@ -59,19 +71,17 @@ class Coloring:
 	def addRestriction(self, v):
 		"""Add a color restriction of the neighbors in v"""
 		for neighbor in self.graph.vertices[v].neighbors:
-			if(self.colorOfVertice[neighbor] >= 0):
-				self.restrictedColors[v].add(self.colorOfVertice[neighbor])
+			if(self.colorOfVertice[v] >= 0):
+			    self.restrictedColors[neighbor].add(self.colorOfVertice[v])
 
 	def removeRestriction(self, v):
 		"""Remove a restriction of v on it's neighbors"""
 		for neighbor in self.graph.vertices[v].neighbors:
-			self.restrictedColors[neighbor].remove(self.colorOfVertice[v])
-
+		    self.restrictedColors[neighbor].discard(self.colorOfVertice[v])
 
 	def swapColors(self,v,newColor):
 		self.uncolorVertice(v)
 		self.colorVertice(v,newColor)
-
 
 	def uncolorVertice(self,verticeId):
 		color = self.colorOfVertice[verticeId]
@@ -81,6 +91,7 @@ class Coloring:
 			self.weightOfColor[color] = 0
 
 		self.numVerticesOfColor[color] -= 1
+		self.removeRestriction(verticeId)
 
 	def colorVertice(self,verticeId, color):
 		while(self.numColors <= color):
@@ -104,6 +115,8 @@ class Coloring:
 	#greedly color the graph
 	def colorGreedy(self,start):
 		print("Greedy Coloring ...")
+		for i in range(self.graph.k):
+		    self.createNewColor()
 		for i in range(self.graph.numVertices):
 			self.restrictedColors[i] = set()
 		count = 0
@@ -127,12 +140,6 @@ class Coloring:
 		for i in range(self.graph.numVertices):
 			newColor = self.findLeastWeightColorNotUsedByNeighbors(i,False)
 			self.swapColors(i, newColor)
-
-
-
-		for i in range(self.graph.numVertices):
-			self.addRestriction(i)
-
 
 	#Keeping colored ordered correctly
 	def fixColors(self):
@@ -183,25 +190,9 @@ class Coloring:
 	#FINDING NEIGHBORS
 	def findSmallestColorNotUsedByNeighbors(self, verticeId,tryToGetNewColor):
 
-		neighborColor = 0;
-
-		#array of colors starting at 0
-		colors = [0] * self.numColors
-
-		#not allowing to pick same color (for mutations)
-		if tryToGetNewColor:
-			colors[self.colorOfVertice[verticeId]] = 1
-
-		#Set colors to 1 if a neighbor is using it
-		for neighbor in self.graph.vertices[verticeId].neighbors:
-			neighborColor = self.colorOfVertice[neighbor]
-
-			if(neighborColor != -1):
-				colors[neighborColor] = 1
-
 		#Search for a non set color
 		for i in range(self.numColors):
-			if colors[i] == 0:
+			if i not in self.restrictedColors[verticeId]:
 				return i
 
 		#If it gets here all colors are used
@@ -212,10 +203,10 @@ class Coloring:
 
 	def findLeastWeightColorNotUsedByNeighbors(self, verticeId,allowSameColor):
 
-		neighborColor = 0;
+		#neighborColor = 0;
 
 		#array of colors starting at 0
-		colors = [0] * self.numColors
+		#colors = [0] * self.numColors
 
 		#not allowing to pick same color (for mutations)
 		#if not allowSameColor:
@@ -229,10 +220,10 @@ class Coloring:
 			#	colors[neighborColor] = 1
 
 		color = -1
-		mincolor = 100000000000000000
+		mincolor = 1000000000
 		#Search for a non set color
 		for i in range(self.numColors):
-			if self.restrictedColors[i]:
+			if i not in self.restrictedColors[verticeId]:
 				if self.weightOfColor[i] < mincolor:
 					mincolor = self.weightOfColor[i]
 					color = i
