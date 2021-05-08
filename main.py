@@ -15,7 +15,7 @@ def main():
 
 	problemInfo = ReadInput(pathToInputFile)
 	graph = Graph(problemInfo)
-	graph.print(False)
+        #graph.print(False)
 
 	separators = []
 	#get separators used in crossover

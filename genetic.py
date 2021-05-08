@@ -13,7 +13,7 @@ def geneticSolve(graph,separators,populationSize, elitism, crossOverRate,mutatio
 	nonImprovingGens = 0
 	generations = 0
 	bestScore = positive_infnity
-	print("---------------------------------------------------------------------------")
+	#print("---------------------------------------------------------------------------")
 	#START ALGORITHM
 	while shouldKeepGoing(maxTime, time.time() - startTime, maxNonImprovingGens,nonImprovingGens):
 		#Get the best solution
@@ -25,17 +25,17 @@ def geneticSolve(graph,separators,populationSize, elitism, crossOverRate,mutatio
 		#Check if there was improvement
 		if(bestScore <= solutions[0].getScore()):
 			nonImprovingGens+= 1
-			print(generations)
-			print(nonImprovingGens)
-			print("Execution Time: " + str(round(time.time() - startTime,2)) + "s")
-			print(solutions[0].numVerticesOfColor)
-			solutions[0].print(False)
+			#print(generations)
+			#print(nonImprovingGens)
+			#print("Execution Time: " + str(round(time.time() - startTime,2)) + "s")
+			#print(solutions[0].numVerticesOfColor)
+			#solutions[0].print(False)
 		else:
 			bestScore = solutions[0].getScore()
 			nonImprovingGens = 0
-			print("Execution Time: " + str(round(time.time() - startTime,2)) + "s")
-			print(solutions[0].numVerticesOfColor)
-			solutions[0].print(False)
+			#print("Execution Time: " + str(round(time.time() - startTime,2)) + "s")
+			#print(solutions[0].numVerticesOfColor)
+			#solutions[0].print(False)
 
 
 		elitism_num = int(elitism * populationSize)
@@ -64,13 +64,14 @@ def geneticSolve(graph,separators,populationSize, elitism, crossOverRate,mutatio
 				#for c in range(newSolutions[i].numColors):
 				#newSolutions[i].search(c)
 		solutions = newSolutions
-		for solution in solutions:
-			solution.print(False)
+		#for solution in solutions:
+                #solution.print(False)
 
 		nonImprovingGens+=1
 		generations += 1
 
-	solutions[0].print(False)
+	solutions[0].small_print()
+	print(" | Generations:", generations)
 	return solutions[0]
 
 ########################################################################################
@@ -201,11 +202,11 @@ def tournamentSelection(solutions,populationSize):
 #STOPPING CONDITIONS
 def shouldKeepGoing(maxTime,time,maxNonImprovingGens,nonImprovingGens):
 	if(maxTime <= time):
-		print("Maximum time reached: " + str(time) + " seconds")
+		#print("Maximum time reached: " + str(time) + " seconds")
 		return False
 
 	if(maxNonImprovingGens <= nonImprovingGens):
-		print("Maximum number of non improving generations reached: " + str(nonImprovingGens-1))
+		#print("Maximum number of non improving generations reached: " + str(nonImprovingGens-1))
 		return False
 
 	return True

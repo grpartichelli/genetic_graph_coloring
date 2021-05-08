@@ -1,0 +1,13 @@
+123456
+ Score: 250407.15 | Num Colors: 10 | Generations: 8078
+ Score: 250191.97 | Num Colors: 10 | Generations: 9148
+ Score: 250323.83 | Num Colors: 10 | Generations: 9691
+ Score: 250295.95 | Num Colors: 10 | Generations: 11322
+ Score: 250158.78 | Num Colors: 10 | Generations: 12480
+ Score: 250523.39 | Num Colors: 10 | Generations: 15781
+ Score: 250478.81 | Num Colors: 10 | Generations: 22168
+ Score: 250351.8 | Num Colors: 10 | Generations: 28948
+ Score: 250364.51 | Num Colors: 10 | Generations: 42509
+ Score: 252195.68 | Num Colors: 10 | Generations: 108369
+212392
+310293

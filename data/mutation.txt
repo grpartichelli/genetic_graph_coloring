@@ -1,0 +1,59 @@
+123456
+ Score: 250206.13  Generations: 21024
+ Score: 250401.08  Generations: 14104
+ Score: 250191.97  Generations: 8608
+ Score: 250474.59  Generations: 6986
+ Score: 250435.59  Generations: 5440
+ Score: 250433.32  Generations: 4684
+ Score: 250294.83  Generations: 4014
+ Score: 250463.38  Generations: 3652
+ Score: 250486.89  Generations: 3121
+ Score: 250437.35  Generations: 3463
+
+212392
+ Score: 250612.63  Generations: 20859
+ Score: 250359.68  Generations: 12410
+ Score: 250324.01  Generations: 8618
+ Score: 250288.65  Generations: 6673
+ Score: 250297.24  Generations: 5464
+ Score: 250248.99  Generations: 4465
+ Score: 250325.73  Generations: 3931
+ Score: 250278.39  Generations: 3444
+ Score: 250476.54  Generations: 3162
+ Score: 250308.65  Generations: 3208
+
+310293
+ Score: 250346.78  Generations: 23597
+ Score: 250419.43  Generations: 11852
+ Score: 250576.3  Generations: 8802
+ Score: 250361.63  Generations: 6669
+ Score: 250316.51  Generations: 4899
+ Score: 250288.13  Generations: 4505
+ Score: 250320.54  Generations: 3910
+ Score: 250411.34  Generations: 3318
+ Score: 250262.8  Generations: 3436
+ Score: 250268.17  Generations: 3097
+
+429312
+ Score: 250467.37  Generations: 23063
+ Score: 250285.81  Generations: 12291
+ Score: 250545.66  Generations: 8489
+ Score: 250571.13  Generations: 6643
+ Score: 250386.82  Generations: 5534
+ Score: 250316.28  Generations: 4809
+ Score: 250542.26  Generations: 3917
+ Score: 250461.74  Generations: 3715
+ Score: 250398.48  Generations: 3136
+ Score: 250370.51  Generations: 3016
+
+523123
+ Score: 250379.33  Generations: 20827
+ Score: 250514.96  Generations: 12066
+ Score: 250464.86  Generations: 8323
+ Score: 250437.66  Generations: 6636
+ Score: 250348.91  Generations: 4971
+ Score: 250268.1  Generations: 4291
+ Score: 250420.94  Generations: 3925
+ Score: 250241.11  Generations: 3569
+ Score: 250385.64  Generations: 3333
+ Score: 250412.21  Generations: 3202

@@ -110,17 +110,15 @@ class Coloring:
 
 		return newColor
 
-
 	#greedly color the graph
 	def colorGreedy(self,start):
-		print("Greedy Coloring ...")
 		for i in range(self.graph.k):
 		    self.createNewColor()
 		for i in range(self.graph.numVertices):
 			self.restrictedColors[i] = set()
 		count = 0
 		i = start
-		#self.graph.vertices.sort()
+		self.graph.vertices.sort()
 		while count < self.graph.numVertices:
 			vColor = self.findSmallestColorNotUsedByNeighbors(i,False)
 			self.colorVertice(i, vColor)
@@ -269,6 +267,5 @@ class Coloring:
 			print("}")
 
 
-	def smallprint(self):
-
-		print(" Score: " + str(round(self.getScore(),3)) +" | Num Colors: " + str(self.numColors), end ="" )
+	def small_print(self):
+            print(" Score: " + str(round(self.getScore(),3)) +" | Num Colors: " + str(self.numColors), end="")
