@@ -133,7 +133,7 @@ def crossover(p1,p2,graph,solutions,separators,separatorsSize):
 	mustFix = []
 	#if solutions[p2].colorOfVertice[v] not in son.restrictedColors[v]: #on.swapColors(v, solutions[p2].colorOfVertice[v])
 
-	for v in range(son.numColors):
+	for v in range(graph.numVertices):
 		if separator[v] == 0: #will go to another available color
 			mustFix.append(v)
 
