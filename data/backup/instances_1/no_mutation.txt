@@ -1,0 +1,10 @@
+ Score: 103408.35  Score: 102073.72  Generations: 54918
+ Score: 253007.8  Score: 250432.15  Generations: 41840
+ Score: 141989.72  Score: 141989.72  Generations: 18194
+ Score: 80165.22  Score: 79904.55  Generations: 7042
+ Score: 721556.5  Score: 712500.38  Generations: 42210
+ Score: 332432.6  Score: 330263.33  Generations: 11864
+ Score: 158326.96  Score: 158326.96  Generations: 4227
+ Score: 626971.18  Score: 625548.11  Generations: 4429
+ Score: 223165.8  Score: 223165.8  Generations: 1015
+ Score: 124910.02  Score: 124865.02  Generations: 765

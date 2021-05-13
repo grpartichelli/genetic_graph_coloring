@@ -9,22 +9,20 @@ from genetic import *
 NUM_SEPARATORS = 100
 
 def main():
-	pathToInputFile,population,elitism,crossOverRate,mutationRate,maxTime,maxNonImprovingGens,randomSeed = getTerminalInput()
+    pathToInputFile,population,elitism,crossOverRate,mutationRate,maxTime,maxNonImprovingGens,randomSeed = getTerminalInput()
 
-	random.seed(randomSeed)
+    random.seed(randomSeed)
 
-	problemInfo = ReadInput(pathToInputFile)
-	graph = Graph(problemInfo)
+    problemInfo = ReadInput(pathToInputFile)
+    graph = Graph(problemInfo)
         #graph.print(False)
 
-	separators = []
-	#get separators used in crossover
-	for i in range(NUM_SEPARATORS):
-		separators.append(graph.get_separated_graph(random.randint(0,graph.numVertices-1)))
+    separators = []
+    #get separators used in crossover
+    for i in range(NUM_SEPARATORS):
+        separators.append(graph.get_separated_graph(random.randint(0,graph.numVertices-1)))
 
-	geneticSolve(graph, separators, population, elitism, crossOverRate, mutationRate, maxTime, maxNonImprovingGens)
+    geneticSolve(graph, separators, population, elitism, crossOverRate, mutationRate, maxTime, maxNonImprovingGens)
 
 if __name__ == "__main__":
-	main()
-
-
+    main()
